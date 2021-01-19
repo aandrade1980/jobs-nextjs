@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { useQuery } from '@apollo/client';
 
-import { ALL_JOBS_QUERY } from 'graphql/queries';
+import { ALL_JOBS_QUERY } from '@/graphql/queries';
 
-import styles from '../styles/Home.module.css';
+import styles from '@/styles/Home.module.css';
 
 export default function Home() {
   const { loading, error, data } = useQuery(ALL_JOBS_QUERY);
