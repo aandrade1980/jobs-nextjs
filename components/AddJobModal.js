@@ -1,8 +1,11 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Button,
+  Checkbox,
+  CheckboxGroup,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -11,25 +14,60 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure
+  Textarea,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 
 import { CREATE_JOB_MUTATION } from '@/graphql/mutations';
-import { ALL_JOBS_QUERY } from '@/graphql/queries';
+import { ALL_CATEGORIES_QUERY, ALL_JOBS_QUERY } from '@/graphql/queries';
 
 function AddJobModal() {
+  const [createJob, { loading: loadingJobs }] = useMutation(
+    CREATE_JOB_MUTATION
+  );
+  // TODO check is the categories are loading and if you get an error
+  const { loading, error, data } = useQuery(ALL_CATEGORIES_QUERY);
+
   const { register, handleSubmit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [createJob, { loading }] = useMutation(CREATE_JOB_MUTATION);
+  const toast = useToast();
 
-  const onSubmit = async ({ title, company, email, postedDate }) => {
+  const parseCategoriesIds = (arrayCategoriesId = []) => {
+    let queryObject = '{';
+
+    arrayCategoriesId.forEach((category, index) => {
+      queryObject = queryObject + category;
+
+      if (index !== arrayCategoriesId.length - 1) {
+        queryObject = queryObject + ',';
+      }
+    });
+
+    queryObject = queryObject + '}';
+
+    return queryObject;
+  };
+
+  const onSubmit = async ({
+    title,
+    company,
+    email,
+    postedDate,
+    description,
+    categoriesIds
+  }) => {
+    const parsedCategoriesIds = parseCategoriesIds(categoriesIds);
+
     await createJob({
       variables: {
         title,
         company,
         email,
-        postedDate: new Date(postedDate).toISOString()
+        postedDate: new Date(postedDate),
+        description,
+        categoriesIds: parsedCategoriesIds
       },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
@@ -38,7 +76,6 @@ function AddJobModal() {
 
         const newJob = data['insert_jobs'].returning[0];
 
-        // TODO try to order apollo cache by postedDate
         cache.writeQuery({
           query: ALL_JOBS_QUERY,
           data: {
@@ -49,6 +86,14 @@ function AddJobModal() {
       }
     });
     onClose();
+    toast({
+      title: 'Job created.',
+      description: "We've created your Job for you.",
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+      position: 'top'
+    });
   };
 
   return (
@@ -97,6 +142,34 @@ function AddJobModal() {
               <FormLabel>Date Posted</FormLabel>
               <Input type="date" name="postedDate" ref={register} />
             </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Categories</FormLabel>
+              <CheckboxGroup>
+                <HStack>
+                  {data?.categories.map(({ id, name }) => (
+                    <Checkbox
+                      key={id}
+                      value={id}
+                      borderColor="gray.300"
+                      name="categoriesIds"
+                      ref={register}
+                    >
+                      {name}
+                    </Checkbox>
+                  ))}
+                </HStack>
+              </CheckboxGroup>
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Description</FormLabel>
+              <Textarea
+                name="description"
+                placeholder="We are looking for a ninja developer..."
+                ref={register}
+              />
+            </FormControl>
           </ModalBody>
 
           <ModalFooter>
@@ -105,7 +178,7 @@ function AddJobModal() {
               backgroundColor="#0AF5F4"
               ml={3}
               type="submit"
-              isLoading={loading}
+              isLoading={loadingJobs}
             >
               Create
             </Button>

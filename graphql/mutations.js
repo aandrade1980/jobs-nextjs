@@ -6,6 +6,8 @@ export const CREATE_JOB_MUTATION = gql`
     $email: String
     $postedDate: date
     $title: String!
+    $description: String
+    $categoriesIds: _text
   ) {
     insert_jobs(
       objects: {
@@ -13,17 +15,12 @@ export const CREATE_JOB_MUTATION = gql`
         email: $email
         postedDate: $postedDate
         title: $title
+        description: $description
+        categoriesIds: $categoriesIds
       }
     ) {
       returning {
-        categoriesIds
-        company
-        createdAt
-        description
-        email
         id
-        postedDate
-        title
       }
     }
   }
