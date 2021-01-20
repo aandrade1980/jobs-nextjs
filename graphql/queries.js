@@ -14,3 +14,12 @@ export const ALL_JOBS_QUERY = gql`
     }
   }
 `;
+
+export const ALL_CATEGORIES_QUERY = gql`
+  query allCategories {
+    categories {
+      id
+      name
+    }
+  }
+`;

@@ -11,6 +11,15 @@ export default function Home() {
       <Head>
         <title>Post Jobs</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (localStorage.getItem('post-job-auth')) {
+            window.location.href = "/jobs"
+          }
+        `
+          }}
+        />
       </Head>
 
       <Box
