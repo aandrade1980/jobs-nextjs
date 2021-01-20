@@ -9,8 +9,7 @@ export default function Header() {
       <Flex
         alignItems="center"
         justifyContent="space-between"
-        pt={4}
-        pb={4}
+        py={4}
         maxW="1250px"
         margin="0 auto"
         w="full"

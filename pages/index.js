@@ -1,26 +1,11 @@
 import Head from 'next/head';
-import { useQuery } from '@apollo/client';
+import { Box, Button, Heading } from '@chakra-ui/react';
 
-import { ALL_JOBS_QUERY } from '@/graphql/queries';
-
-import { Button } from '@chakra-ui/react';
 import { GoogleIcon } from '@/components/Icons';
 import { useAuth } from '@/lib/auth';
 
 export default function Home() {
   const auth = useAuth();
-
-  const { loading, error, data } = useQuery(ALL_JOBS_QUERY);
-
-  if (error) {
-    return <div>Error loading jobs</div>;
-  }
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  const { jobs: allJobs } = data;
-
   return (
     <div>
       <Head>
@@ -28,22 +13,28 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1>
-          Welcome to <code>Jobs Post</code>
-        </h1>
+      <Box
+        as="main"
+        direction="column"
+        align="center"
+        justify="center"
+        bg="gray.100"
+        py={24}
+      >
+        <Heading>Welcome to Jobs Post</Heading>
         <Button
-          size="md"
-          backgroundColor="gray.100"
+          mt={8}
           leftIcon={<GoogleIcon />}
+          backgroundColor="white"
           color="black"
-          _hover={{ bg: 'gray.300' }}
-          _active={{ transform: 'scale(0.95)', bg: 'gray.200' }}
+          fontWeight="medium"
+          _hover={{ bg: 'gray.200' }}
+          _active={{ transform: 'scale(0.95)', bg: 'gray.100' }}
           onClick={() => auth.signinWithGoogle()}
         >
           Continue with Google
         </Button>
-      </main>
+      </Box>
     </div>
   );
 }
