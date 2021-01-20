@@ -38,6 +38,7 @@ function AddJobModal() {
 
         const newJob = data['insert_jobs'].returning[0];
 
+        // TODO try to order apollo cache by postedDate
         cache.writeQuery({
           query: ALL_JOBS_QUERY,
           data: {
