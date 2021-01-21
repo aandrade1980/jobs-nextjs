@@ -21,7 +21,11 @@ import {
 import { useForm } from 'react-hook-form';
 
 import { CREATE_JOB_MUTATION } from '@/graphql/mutations';
-import { ALL_CATEGORIES_QUERY, ALL_JOBS_QUERY } from '@/graphql/queries';
+import {
+  ALL_CATEGORIES_QUERY,
+  GET_JOBS_BY_AUTHOR_QUERY
+} from '@/graphql/queries';
+import { useAuth } from '@/lib/auth';
 
 function AddJobModal() {
   const [createJob, { loading: loadingJobs }] = useMutation(
@@ -29,7 +33,7 @@ function AddJobModal() {
   );
   // TODO check is the categories are loading and if you get an error
   const { loading, error, data } = useQuery(ALL_CATEGORIES_QUERY);
-
+  const { user } = useAuth();
   const { register, handleSubmit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -67,17 +71,20 @@ function AddJobModal() {
         email,
         postedDate: new Date(postedDate),
         description,
-        categoriesIds: parsedCategoriesIds
+        categoriesIds: parsedCategoriesIds,
+        authorId: user.uid
       },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
-          query: ALL_JOBS_QUERY
+          query: GET_JOBS_BY_AUTHOR_QUERY,
+          variables: { authorId: user.uid }
         });
 
         const newJob = data['insert_jobs'].returning[0];
 
         cache.writeQuery({
-          query: ALL_JOBS_QUERY,
+          query: GET_JOBS_BY_AUTHOR_QUERY,
+          variables: { authorId: user.uid },
           data: {
             ...cacheData,
             jobs: [newJob, ...cacheData.jobs]
