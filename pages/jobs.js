@@ -2,17 +2,23 @@ import { Box } from '@chakra-ui/react';
 import React from 'react';
 import { useQuery } from '@apollo/client';
 
-import { ALL_JOBS_QUERY } from '@/graphql/queries';
+import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
 import Header from '@/components/Header';
 import JobsTable from '@/components/JobsTable';
 import JobsTableSkeleton from '@/components/JobsTableSkeleton';
 import { JobsTableHeader } from '@/components/JobsTableHeader';
+import { useAuth } from '@/lib/auth';
 
 const jobs = () => {
-  const { loading, error, data } = useQuery(ALL_JOBS_QUERY);
+  const { user } = useAuth();
+  const { loading, error, data } = useQuery(GET_JOBS_BY_AUTHOR_QUERY, {
+    variables: { authorId: user?.uid }
+  });
 
+  // Todo add a error toast
   if (error) {
-    return <div>Error loading jobs</div>;
+    console.error(`Error getting jobs: ${error}`);
+    return `Error loading jobs ${error}`;
   }
 
   if (loading) {

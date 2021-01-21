@@ -15,6 +15,25 @@ export const ALL_JOBS_QUERY = gql`
   }
 `;
 
+export const GET_JOBS_BY_AUTHOR_QUERY = gql`
+  query getJobs($authorId: String!) {
+    jobs(
+      where: { authorId: { _eq: $authorId } }
+      order_by: { postedDate: desc }
+    ) {
+      authorId
+      categoriesIds
+      company
+      createdAt
+      description
+      email
+      postedDate
+      title
+      id
+    }
+  }
+`;
+
 export const ALL_CATEGORIES_QUERY = gql`
   query allCategories {
     categories {

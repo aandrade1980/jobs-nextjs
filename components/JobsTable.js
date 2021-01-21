@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/react';
+import RemoveJobDialog from './RemoveJobDialog';
 
 import { Table, Td, Th, Tr } from './Table';
 
@@ -20,6 +21,9 @@ const JobsTable = ({ jobs }) => (
           <Td>{company}</Td>
           <Td>{email}</Td>
           <Td>{postedDate}</Td>
+          <Td>
+            <RemoveJobDialog id={id} />
+          </Td>
         </Box>
       ))}
     </tbody>
