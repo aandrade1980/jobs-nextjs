@@ -41,6 +41,15 @@ export const CREATE_CATEGORY_MUTATION = gql`
     insert_categories_one(object: { name: $name }) {
       id
       name
+      createdAt
+    }
+  }
+`;
+
+export const DELETE_CATEGORY_BY_ID_MUTATION = gql`
+  mutation deleteCategory($id: uuid!) {
+    delete_categories_by_pk(id: $id) {
+      id
     }
   }
 `;

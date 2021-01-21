@@ -25,7 +25,7 @@ const Jobs = () => {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header />
-        <Box px={8}>
+        <Box px={8} maxW="1250px" margin="0 auto">
           <JobsTableSkeleton />
         </Box>
       </Box>
@@ -37,7 +37,7 @@ const Jobs = () => {
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header />
-      <Box px={8}>
+      <Box px={8} maxW="1250px" margin="0 auto">
         <JobsTableHeader />
         <JobsTable jobs={allJobs} />
       </Box>
