@@ -9,10 +9,10 @@ import JobsTableSkeleton from '@/components/JobsTableSkeleton';
 import { JobsTableHeader } from '@/components/JobsTableHeader';
 import { useAuth } from '@/lib/auth';
 
-const jobs = () => {
+const Jobs = () => {
   const { user } = useAuth();
   const { loading, error, data } = useQuery(GET_JOBS_BY_AUTHOR_QUERY, {
-    variables: { authorId: user?.uid }
+    variables: { authorId: user?.uid || '' }
   });
 
   // Todo add a error toast
@@ -45,4 +45,4 @@ const jobs = () => {
   );
 };
 
-export default jobs;
+export default Jobs;
