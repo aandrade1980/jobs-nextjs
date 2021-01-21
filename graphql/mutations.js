@@ -28,10 +28,19 @@ export const CREATE_JOB_MUTATION = gql`
   }
 `;
 
-export const DELETE_JOB_BY_ID = gql`
+export const DELETE_JOB_BY_ID_MUTATION = gql`
   mutation deleteJob($id: uuid!) {
     delete_jobs_by_pk(id: $id) {
       id
+    }
+  }
+`;
+
+export const CREATE_CATEGORY_MUTATION = gql`
+  mutation createCategory($name: String!) {
+    insert_categories_one(object: { name: $name }) {
+      id
+      name
     }
   }
 `;

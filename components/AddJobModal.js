@@ -5,7 +5,7 @@ import {
   CheckboxGroup,
   FormControl,
   FormLabel,
-  HStack,
+  Grid,
   Input,
   Modal,
   ModalBody,
@@ -131,7 +131,7 @@ function AddJobModal() {
               />
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl mt={3}>
               <FormLabel>Company</FormLabel>
               <Input
                 placeholder="Facebook"
@@ -140,20 +140,20 @@ function AddJobModal() {
               />
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl mt={3}>
               <FormLabel>Email</FormLabel>
               <Input placeholder="john@email.com" name="email" ref={register} />
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl mt={3}>
               <FormLabel>Date Posted</FormLabel>
               <Input type="date" name="postedDate" ref={register} />
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl mt={3}>
               <FormLabel>Categories</FormLabel>
               <CheckboxGroup>
-                <HStack>
+                <Grid templateColumns="repeat(3, 1fr)">
                   {data?.categories.map(({ id, name }) => (
                     <Checkbox
                       key={id}
@@ -165,11 +165,11 @@ function AddJobModal() {
                       {name}
                     </Checkbox>
                   ))}
-                </HStack>
+                </Grid>
               </CheckboxGroup>
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl mt={3}>
               <FormLabel>Description</FormLabel>
               <Textarea
                 name="description"

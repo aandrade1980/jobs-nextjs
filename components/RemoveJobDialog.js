@@ -13,7 +13,7 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useRef, useState } from 'react';
 
-import { DELETE_JOB_BY_ID } from '@/graphql/mutations';
+import { DELETE_JOB_BY_ID_MUTATION } from '@/graphql/mutations';
 import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
 import { useAuth } from '@/lib/auth';
 
@@ -21,7 +21,7 @@ export default function RemoveJobDialog({ id }) {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
-  const [deleteJob, { loading }] = useMutation(DELETE_JOB_BY_ID);
+  const [deleteJob, { loading }] = useMutation(DELETE_JOB_BY_ID_MUTATION);
   const cancelRef = useRef();
   const toast = useToast();
 

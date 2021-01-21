@@ -36,7 +36,7 @@ export const GET_JOBS_BY_AUTHOR_QUERY = gql`
 
 export const ALL_CATEGORIES_QUERY = gql`
   query allCategories {
-    categories {
+    categories(order_by: { createdAt: desc, name: asc }) {
       id
       name
     }
