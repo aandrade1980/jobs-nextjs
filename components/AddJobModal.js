@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
   Button,
   Checkbox,
@@ -28,15 +28,21 @@ import {
 import { useAuth } from '@/lib/auth';
 
 function AddJobModal() {
+  const { user } = useAuth();
   const [createJob, { loading: loadingJobs }] = useMutation(
     CREATE_JOB_MUTATION
   );
-  // TODO check is the categories are loading and if you get an error
-  const { loading, error, data } = useQuery(ALL_CATEGORIES_QUERY);
-  const { user } = useAuth();
+  const [allCategories, { data: categoriesQueryData }] = useLazyQuery(
+    ALL_CATEGORIES_QUERY
+  );
   const { register, handleSubmit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+
+  const openModal = () => {
+    allCategories();
+    onOpen();
+  };
 
   const parseCategoriesIds = (arrayCategoriesId = []) => {
     let queryObject = '{';
@@ -111,7 +117,7 @@ function AddJobModal() {
         fontWeight="medium"
         _hover={{ bg: 'gray.700' }}
         _active={{ transform: 'scale(0.95)', bg: 'gray.800' }}
-        onClick={onOpen}
+        onClick={openModal}
       >
         + Add Job
       </Button>
@@ -154,7 +160,7 @@ function AddJobModal() {
               <FormLabel>Categories</FormLabel>
               <CheckboxGroup>
                 <Grid templateColumns="repeat(3, 1fr)">
-                  {data?.categories.map(({ id, name }) => (
+                  {categoriesQueryData?.categories.map(({ id, name }) => (
                     <Checkbox
                       key={id}
                       value={id}

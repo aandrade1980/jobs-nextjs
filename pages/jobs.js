@@ -12,7 +12,8 @@ import { useAuth } from '@/lib/auth';
 const Jobs = () => {
   const { user } = useAuth();
   const { loading, error, data } = useQuery(GET_JOBS_BY_AUTHOR_QUERY, {
-    variables: { authorId: user?.uid || '' }
+    variables: { authorId: user?.uid },
+    skip: user?.uid === undefined
   });
 
   // Todo add a error toast
@@ -21,7 +22,7 @@ const Jobs = () => {
     return `Error loading jobs ${error}`;
   }
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header />

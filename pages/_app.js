@@ -29,14 +29,14 @@ const GlobalStyle = ({ children }) => (
 function MyApp({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps.initialApolloState);
   return (
-    <ApolloProvider client={apolloClient}>
-      <AuthProvider>
+    <AuthProvider>
+      <ApolloProvider client={apolloClient}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           <Component {...pageProps} />
         </ThemeProvider>
-      </AuthProvider>
-    </ApolloProvider>
+      </ApolloProvider>
+    </AuthProvider>
   );
 }
 

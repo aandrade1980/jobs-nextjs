@@ -4,6 +4,9 @@ import { Box, Button, Heading } from '@chakra-ui/react';
 import { GoogleIcon } from '@/components/Icons';
 import { useAuth } from '@/lib/auth';
 
+import { initializeApollo } from '@/lib/apolloClient';
+import { ALL_CATEGORIES_QUERY } from '@/graphql/queries';
+
 export default function Home() {
   const auth = useAuth();
   return (
@@ -46,4 +49,19 @@ export default function Home() {
       </Box>
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: ALL_CATEGORIES_QUERY
+  });
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract()
+    },
+    revalidate: 60
+  };
 }
