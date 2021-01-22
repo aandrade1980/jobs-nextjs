@@ -21,11 +21,11 @@ const JobPage = () => {
     console.error(`Error getting the job: ${error}`);
   }
 
-  console.log('DATA => ', data['jobs_by_pk']);
+  console.log('DATA => ', data?.jobs_by_pk);
 
-  const currentJob = data['jobs_by_pk'];
+  const currentJob = data?.jobs_by_pk;
 
-  return <div>{currentJob.title}</div>;
+  return <div>{currentJob?.title}</div>;
 };
 
 export default JobPage;
