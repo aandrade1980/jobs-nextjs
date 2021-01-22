@@ -41,7 +41,6 @@ export const CREATE_CATEGORY_MUTATION = gql`
     insert_categories_one(object: { name: $name }) {
       id
       name
-      createdAt
     }
   }
 `;
