@@ -65,10 +65,17 @@ const Categories = () => {
 
         const newCategory = data['insert_categories_one'];
 
+        const sortedCategories = [
+          newCategory,
+          ...cacheData.categories
+        ].sort((a, b) =>
+          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+        );
+
         cache.writeQuery({
           query: ALL_CATEGORIES_QUERY,
           data: {
-            categories: [newCategory, ...cacheData.categories]
+            categories: sortedCategories
           }
         });
       }

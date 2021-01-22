@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 
+// #Jobs
 export const ALL_JOBS_QUERY = gql`
   query allJobs {
     jobs(order_by: { postedDate: desc }) {
@@ -34,15 +35,6 @@ export const GET_JOBS_BY_AUTHOR_QUERY = gql`
   }
 `;
 
-export const ALL_CATEGORIES_QUERY = gql`
-  query allCategories {
-    categories(order_by: { createdAt: desc, name: asc }) {
-      id
-      name
-    }
-  }
-`;
-
 export const GET_JOB_BY_ID_QUERY = gql`
   query getJob($id: uuid!) {
     jobs_by_pk(id: $id) {
@@ -53,6 +45,16 @@ export const GET_JOB_BY_ID_QUERY = gql`
       email
       postedDate
       title
+    }
+  }
+`;
+
+// #Categories
+export const ALL_CATEGORIES_QUERY = gql`
+  query allCategories {
+    categories(order_by: { name: asc }) {
+      id
+      name
     }
   }
 `;
