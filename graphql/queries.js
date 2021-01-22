@@ -42,3 +42,17 @@ export const ALL_CATEGORIES_QUERY = gql`
     }
   }
 `;
+
+export const GET_JOB_BY_ID_QUERY = gql`
+  query getJob($id: uuid!) {
+    jobs_by_pk(id: $id) {
+      categoriesIds
+      company
+      createdAt
+      description
+      email
+      postedDate
+      title
+    }
+  }
+`;

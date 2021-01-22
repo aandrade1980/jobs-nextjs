@@ -1,6 +1,7 @@
-import { Box } from '@chakra-ui/react';
-import RemoveJobDialog from './RemoveJobDialog';
+import { Box, Link } from '@chakra-ui/react';
+import NextLink from 'next/link';
 
+import RemoveJobDialog from './RemoveJobDialog';
 import { Table, Td, Th, Tr } from './Table';
 
 const JobsTable = ({ jobs }) => (
@@ -17,7 +18,11 @@ const JobsTable = ({ jobs }) => (
     <tbody>
       {jobs.map(({ id, title, company, postedDate, email }) => (
         <Box as="tr" key={id}>
-          <Td fontWeight="medium">{title}</Td>
+          <Td fontWeight="medium">
+            <NextLink href="/job/[jobId]" as={`/job/${id}`}>
+              <Link>{title}</Link>
+            </NextLink>
+          </Td>
           <Td>{company}</Td>
           <Td>{email}</Td>
           <Td>{postedDate}</Td>
