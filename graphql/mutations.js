@@ -9,6 +9,7 @@ export const CREATE_JOB_MUTATION = gql`
     $description: String
     $categoriesIds: _text
     $authorId: String
+    $imageUrl: String
   ) {
     insert_jobs(
       objects: {
@@ -19,6 +20,7 @@ export const CREATE_JOB_MUTATION = gql`
         description: $description
         categoriesIds: $categoriesIds
         authorId: $authorId
+        imageUrl: $imageUrl
       }
     ) {
       returning {
