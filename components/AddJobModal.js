@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import {
   Button,
   Checkbox,
@@ -19,6 +19,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { s3 } from '@/lib/aws.config';
 
 import { CREATE_JOB_MUTATION } from '@/graphql/mutations';
 import {
@@ -66,8 +67,27 @@ function AddJobModal() {
     email,
     postedDate,
     description,
-    categoriesIds
+    categoriesIds,
+    image
   }) => {
+    let imageUrl = null;
+
+    if (image.length) {
+      const file = image[0];
+      const fileName = file.name;
+      const filePath = `jobs-images/${fileName}`;
+
+      const result = await s3
+        .upload({
+          Key: filePath,
+          Body: file,
+          ACL: 'public-read'
+        })
+        .promise();
+
+      imageUrl = result.Location;
+    }
+
     const parsedCategoriesIds = parseCategoriesIds(categoriesIds);
 
     await createJob({
@@ -78,7 +98,8 @@ function AddJobModal() {
         postedDate: new Date(postedDate),
         description,
         categoriesIds: parsedCategoriesIds,
-        authorId: user.uid
+        authorId: user.uid,
+        imageUrl
       },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
@@ -182,6 +203,10 @@ function AddJobModal() {
                 placeholder="We are looking for a ninja developer..."
                 ref={register}
               />
+            </FormControl>
+
+            <FormControl mt={3}>
+              <input type="file" id="image" ref={register} name="image" />
             </FormControl>
           </ModalBody>
 
