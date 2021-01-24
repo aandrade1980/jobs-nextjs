@@ -59,3 +59,12 @@ export const ALL_CATEGORIES_QUERY = gql`
     }
   }
 `;
+
+export const GET_CATEGORIES_BY_ID_QUERY = gql`
+  query getCategories($_in: [uuid!]) {
+    categories(where: { id: { _in: $_in } }) {
+      id
+      name
+    }
+  }
+`;
