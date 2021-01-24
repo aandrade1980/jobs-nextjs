@@ -37,7 +37,7 @@ const Categories = () => {
   if (loading) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
-        <Header />
+        <Header active="categories" />
         <Flex px={8} pt={4} justifyContent="center">
           <Spinner
             thickness="4px"
@@ -125,7 +125,7 @@ const Categories = () => {
 
   return (
     <Box h="100vh" backgroundColor="gray.100">
-      <Header />
+      <Header active="categories" />
       <Flex flexDirection="column" maxW="1250px" margin="0 auto">
         <Flex
           as="form"

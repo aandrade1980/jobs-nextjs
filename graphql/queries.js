@@ -45,6 +45,7 @@ export const GET_JOB_BY_ID_QUERY = gql`
       email
       postedDate
       title
+      imageUrl
     }
   }
 `;
