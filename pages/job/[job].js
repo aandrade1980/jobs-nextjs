@@ -1,9 +1,21 @@
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { Box, Flex, Grid, Heading, Spinner, Text } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Flex,
+  Grid,
+  Heading,
+  Spinner,
+  Text
+} from '@chakra-ui/react';
 import Image from 'next/image';
 
-import { GET_JOB_BY_ID_QUERY } from '@/graphql/queries';
+import {
+  GET_CATEGORIES_BY_ID_QUERY,
+  GET_JOB_BY_ID_QUERY
+} from '@/graphql/queries';
+
 import Header from '@/components/Header';
 
 const JobPage = () => {
@@ -14,8 +26,16 @@ const JobPage = () => {
     variables: { id: job },
     skip: job === undefined
   });
+  const {
+    loading: loadingCategories,
+    error: errorCategories,
+    data: dataCategories
+  } = useQuery(GET_CATEGORIES_BY_ID_QUERY, {
+    variables: { _in: data?.jobs_by_pk?.categoriesIds },
+    skip: data === undefined
+  });
 
-  if (loading || !data) {
+  if (loading || !data || loadingCategories) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header />
@@ -36,6 +56,10 @@ const JobPage = () => {
     console.error(`Error getting the job: ${error}`);
   }
 
+  if (errorCategories) {
+    console.error(`Error getting categories: ${errorCategories}`);
+  }
+
   const {
     title,
     company,
@@ -45,6 +69,22 @@ const JobPage = () => {
     description
   } = data?.jobs_by_pk;
 
+  const { categories } = dataCategories;
+
+  const colorScheme = [
+    'green',
+    'red',
+    'purple',
+    'orange',
+    'yellow',
+    'teal',
+    'cyan',
+    'pink'
+  ];
+
+  const randomItem = () =>
+    colorScheme[Math.floor(Math.random() * colorScheme.length)];
+
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header />
@@ -52,8 +92,9 @@ const JobPage = () => {
         <Grid
           gridTemplateColumns="1fr 1fr"
           gridTemplateRows="auto"
-          gridTemplateAreas='"title image" "company image" "email image" "date image" "description description"'
+          gridTemplateAreas='"title image" "company image" "categories image" "email image" "date image" "description description"'
           rowGap="20px"
+          alignItems="center"
         >
           <Heading as="h2" size="2xl" gridArea="title">
             {title}
@@ -61,24 +102,30 @@ const JobPage = () => {
           <Heading as="h3" size="lg" gridArea="company">
             {company}
           </Heading>
-          <Heading as="h3" size="lg" gridArea="email">
+          <Flex gridArea="categories" flexWrap="wrap">
+            {categories.map(({ id, name }) => (
+              <Badge colorScheme={randomItem()} key={id} mr={2} mb={2}>
+                {name}
+              </Badge>
+            ))}
+          </Flex>
+          <Heading as="h4" size="md" gridArea="email">
             {email}
           </Heading>
-          <Heading as="h3" size="md" gridArea="date">
+          <Heading as="h4" size="md" gridArea="date">
             {postedDate}
           </Heading>
           {imageUrl && (
             <Box
               gridArea="image"
               position="relative"
-              maxW="500px"
               height="auto"
               minH="400px"
             >
               <Image
                 src={imageUrl}
                 layout="fill"
-                objectFit="contain"
+                objectFit="scale-down"
                 objectPosition="top"
               />
             </Box>
