@@ -16,8 +16,9 @@ import { useRef, useState } from 'react';
 import { DELETE_JOB_BY_ID_MUTATION } from '@/graphql/mutations';
 import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
 import { useAuth } from '@/lib/auth';
+import { s3 } from '@/lib/aws.config';
 
-export default function RemoveJobDialog({ id }) {
+export default function RemoveJobDialog({ id, imageUrl }) {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
@@ -26,6 +27,21 @@ export default function RemoveJobDialog({ id }) {
   const toast = useToast();
 
   const onDeleteJob = async () => {
+    if (imageUrl) {
+      const [, , , folder, fileName] = decodeURI(imageUrl).split('/');
+
+      const params = {
+        Bucket: 'nextjs-job-post',
+        Key: `${folder}/${fileName}`
+      };
+
+      s3.deleteObject(params, err => {
+        if (err) {
+          console.error(`Error deleting image: ${err}`);
+        }
+      });
+    }
+
     await deleteJob({
       variables: { id },
       update: (cache, { data }) => {

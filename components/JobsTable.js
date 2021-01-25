@@ -16,7 +16,7 @@ const JobsTable = ({ jobs }) => (
       </Tr>
     </thead>
     <tbody>
-      {jobs.map(({ id, title, company, postedDate, email }) => (
+      {jobs.map(({ id, title, company, postedDate, email, imageUrl }) => (
         <Box as="tr" key={id}>
           <Td fontWeight="medium">
             <NextLink href="/job/[jobId]" as={`/job/${id}`}>
@@ -27,7 +27,7 @@ const JobsTable = ({ jobs }) => (
           <Td>{email}</Td>
           <Td>{postedDate}</Td>
           <Td>
-            <RemoveJobDialog id={id} />
+            <RemoveJobDialog id={id} imageUrl={imageUrl} />
           </Td>
         </Box>
       ))}
