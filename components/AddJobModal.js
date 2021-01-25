@@ -75,7 +75,7 @@ function AddJobModal() {
     if (image.length) {
       const file = image[0];
       const fileName = file.name;
-      const filePath = `jobs-images/${fileName}`;
+      const filePath = `${title}-${Date.now()}/${fileName}`;
 
       const result = await s3
         .upload({
@@ -206,7 +206,13 @@ function AddJobModal() {
             </FormControl>
 
             <FormControl mt={3}>
-              <input type="file" id="image" ref={register} name="image" />
+              <input
+                type="file"
+                id="image"
+                ref={register}
+                name="image"
+                accept="image/*"
+              />
             </FormControl>
           </ModalBody>
 

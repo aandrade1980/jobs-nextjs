@@ -9,8 +9,8 @@ export const ALL_JOBS_QUERY = gql`
       createdAt
       description
       email
-      postedDate
       id
+      postedDate
       title
     }
   }
@@ -28,9 +28,10 @@ export const GET_JOBS_BY_AUTHOR_QUERY = gql`
       createdAt
       description
       email
+      id
+      imageUrl
       postedDate
       title
-      id
     }
   }
 `;
@@ -43,9 +44,9 @@ export const GET_JOB_BY_ID_QUERY = gql`
       createdAt
       description
       email
+      imageUrl
       postedDate
       title
-      imageUrl
     }
   }
 `;
