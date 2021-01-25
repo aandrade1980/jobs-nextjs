@@ -17,14 +17,20 @@ import { useForm } from 'react-hook-form';
 
 import Header from '@/components/Header';
 
-import { ALL_CATEGORIES_QUERY } from '@/graphql/queries';
+import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import {
   CREATE_CATEGORY_MUTATION,
   DELETE_CATEGORY_BY_ID_MUTATION
 } from '@/graphql/mutations';
+import { useAuth } from '@/lib/auth';
 
 const Categories = () => {
-  const { loading, error, data } = useQuery(ALL_CATEGORIES_QUERY);
+  const { user } = useAuth();
+  const authorId = user?.uid;
+  const { loading, error, data } = useQuery(GET_CATEGORIES_BY_AUTHOR_ID_QUERY, {
+    variables: { authorId },
+    skip: authorId === undefined
+  });
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
   );
@@ -34,7 +40,7 @@ const Categories = () => {
   const { register, handleSubmit } = useForm();
   const toast = useToast();
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header active="categories" />
@@ -57,13 +63,17 @@ const Categories = () => {
 
   const onSubmit = async ({ name }, e) => {
     await createCategory({
-      variables: { name },
+      variables: { name, authorId },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
-          query: ALL_CATEGORIES_QUERY
+          query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
+          variables: { authorId }
         });
 
         const newCategory = data['insert_categories_one'];
+
+        newCategory.name = name;
+        newCategory.authorId = authorId;
 
         const sortedCategories = [
           newCategory,
@@ -73,7 +83,8 @@ const Categories = () => {
         );
 
         cache.writeQuery({
-          query: ALL_CATEGORIES_QUERY,
+          query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
+          variables: { authorId },
           data: {
             categories: sortedCategories
           }
@@ -96,7 +107,8 @@ const Categories = () => {
       variables: { id },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
-          query: ALL_CATEGORIES_QUERY
+          query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
+          variables: { authorId: user?.uid }
         });
 
         const deletedCat = data['delete_categories_by_pk'];
@@ -106,7 +118,8 @@ const Categories = () => {
         );
 
         cache.writeQuery({
-          query: ALL_CATEGORIES_QUERY,
+          query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
+          variables: { authorId: user?.uid },
           data: {
             categories: updatedCategories
           }
@@ -168,6 +181,7 @@ const Categories = () => {
                     ml={2}
                     onClick={() => onDeleteCategory(id, name)}
                     cursor="pointer"
+                    _active={{ transform: 'scale(0.95)' }}
                   />
                 </Tooltip>
               </ListItem>

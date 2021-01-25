@@ -23,7 +23,7 @@ import { s3 } from '@/lib/aws.config';
 
 import { CREATE_JOB_MUTATION } from '@/graphql/mutations';
 import {
-  ALL_CATEGORIES_QUERY,
+  GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
   GET_JOBS_BY_AUTHOR_QUERY
 } from '@/graphql/queries';
 import { useAuth } from '@/lib/auth';
@@ -33,15 +33,18 @@ function AddJobModal() {
   const [createJob, { loading: loadingJobs }] = useMutation(
     CREATE_JOB_MUTATION
   );
-  const [allCategories, { data: categoriesQueryData }] = useLazyQuery(
-    ALL_CATEGORIES_QUERY
-  );
+  const [
+    getCategoriesByAuthor,
+    { data: categoriesQueryData }
+  ] = useLazyQuery(GET_CATEGORIES_BY_AUTHOR_ID_QUERY, {
+    variables: { authorId: user?.uid }
+  });
   const { register, handleSubmit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
   const openModal = () => {
-    allCategories();
+    getCategoriesByAuthor();
     onOpen();
   };
 
