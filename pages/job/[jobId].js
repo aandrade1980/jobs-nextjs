@@ -8,6 +8,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import {
   ALL_JOBS_QUERY,
@@ -34,7 +35,7 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false
+    fallback: true
   };
 }
 
@@ -69,7 +70,9 @@ export async function getStaticProps({ params }) {
 }
 
 const JobPage = ({ currentJob, categories }) => {
-  if (!currentJob || !categories) {
+  const router = useRouter();
+
+  if (router.isFallback) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header />
