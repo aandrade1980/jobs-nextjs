@@ -1,5 +1,3 @@
-import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 import {
   Badge,
   Box,
@@ -10,32 +8,71 @@ import {
   Text
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import {
+  ALL_JOBS_QUERY,
   GET_CATEGORIES_BY_ID_QUERY,
   GET_JOB_BY_ID_QUERY
 } from '@/graphql/queries';
 
 import Header from '@/components/Header';
+import { initializeApollo } from '@/lib/apolloClient';
 
-const JobPage = () => {
-  const route = useRouter();
-  const job = route.query?.job;
-
-  const { loading, error, data } = useQuery(GET_JOB_BY_ID_QUERY, {
-    variables: { id: job },
-    skip: job === undefined
-  });
+export async function getStaticPaths() {
+  const apolloClient = initializeApollo();
   const {
-    loading: loadingCategories,
-    error: errorCategories,
-    data: dataCategories
-  } = useQuery(GET_CATEGORIES_BY_ID_QUERY, {
-    variables: { _in: data?.jobs_by_pk?.categoriesIds },
-    skip: data === undefined
+    data: { jobs }
+  } = await apolloClient.query({
+    query: ALL_JOBS_QUERY
   });
 
-  if (loading || !data || loadingCategories) {
+  const paths = jobs.map(({ id }) => ({
+    params: {
+      jobId: id
+    }
+  }));
+
+  return {
+    paths,
+    fallback: true
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const { jobId } = params;
+  const apolloClient = initializeApollo();
+
+  const {
+    data: { jobs_by_pk }
+  } = await apolloClient.query({
+    query: GET_JOB_BY_ID_QUERY,
+    variables: { id: jobId }
+  });
+
+  const {
+    data: { categories }
+  } = await apolloClient.query({
+    query: GET_CATEGORIES_BY_ID_QUERY,
+    variables: { _in: jobs_by_pk.categoriesIds }
+  });
+
+  return {
+    props: {
+      currentJob: {
+        ...jobs_by_pk,
+        id: jobId
+      },
+      categories: [...categories]
+    },
+    revalidate: 1
+  };
+}
+
+const JobPage = ({ currentJob, categories }) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header />
@@ -52,14 +89,6 @@ const JobPage = () => {
     );
   }
 
-  if (error) {
-    console.error(`Error getting the job: ${error}`);
-  }
-
-  if (errorCategories) {
-    console.error(`Error getting categories: ${errorCategories}`);
-  }
-
   const {
     title,
     company,
@@ -67,9 +96,7 @@ const JobPage = () => {
     postedDate,
     imageUrl,
     description
-  } = data?.jobs_by_pk;
-
-  const { categories } = dataCategories;
+  } = currentJob;
 
   const colorScheme = [
     'green',
