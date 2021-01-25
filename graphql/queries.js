@@ -52,11 +52,14 @@ export const GET_JOB_BY_ID_QUERY = gql`
 `;
 
 // #Categories
-export const ALL_CATEGORIES_QUERY = gql`
-  query allCategories {
-    categories(order_by: { name: asc }) {
-      id
+export const GET_CATEGORIES_BY_AUTHOR_ID_QUERY = gql`
+  query getCategoriesByAuthor($authorId: String) {
+    categories(
+      where: { authorId: { _eq: $authorId } }
+      order_by: { name: asc }
+    ) {
       name
+      id
     }
   }
 `;
