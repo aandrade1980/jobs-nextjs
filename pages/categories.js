@@ -132,7 +132,7 @@ const Categories = () => {
         <Box px={9} pt={4}>
           <List spacing={3}>
             {categories.map(({ name, id }) => (
-              <DeleteCategory name={name} id={id} />
+              <DeleteCategory key={id} name={name} id={id} />
             ))}
           </List>
         </Box>
