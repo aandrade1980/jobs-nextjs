@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -7,21 +6,17 @@ import {
   FormControl,
   Input,
   List,
-  ListItem,
   Spinner,
-  Tooltip,
   useToast
 } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import Header from '@/components/Header';
+import DeleteCategory from '@/components/DeleteCategory';
 
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
-import {
-  CREATE_CATEGORY_MUTATION,
-  DELETE_CATEGORY_BY_ID_MUTATION
-} from '@/graphql/mutations';
+import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useAuth } from '@/lib/auth';
 
 const Categories = () => {
@@ -34,9 +29,7 @@ const Categories = () => {
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
   );
-  const [deleteCategory, { loading: deletingCategory }] = useMutation(
-    DELETE_CATEGORY_BY_ID_MUTATION
-  );
+
   const { register, handleSubmit } = useForm();
   const toast = useToast();
 
@@ -102,40 +95,6 @@ const Categories = () => {
     e.target.reset();
   };
 
-  const onDeleteCategory = async (id, name) => {
-    await deleteCategory({
-      variables: { id },
-      update: (cache, { data }) => {
-        const cacheData = cache.readQuery({
-          query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId: user?.uid }
-        });
-
-        const deletedCat = data['delete_categories_by_pk'];
-
-        const updatedCategories = cacheData.categories.filter(
-          category => category.id !== deletedCat.id
-        );
-
-        cache.writeQuery({
-          query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId: user?.uid },
-          data: {
-            categories: updatedCategories
-          }
-        });
-      }
-    });
-    toast({
-      title: 'Category deleted.',
-      description: `We've deleted the ${name} Category for you.`,
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-      position: 'top'
-    });
-  };
-
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header active="categories" />
@@ -173,18 +132,7 @@ const Categories = () => {
         <Box px={9} pt={4}>
           <List spacing={3}>
             {categories.map(({ name, id }) => (
-              <ListItem key={id} display="flex" alignItems="center">
-                {name}{' '}
-                <Tooltip label="Delete Category" fontSize="xs">
-                  <DeleteIcon
-                    color="red.500"
-                    ml={2}
-                    onClick={() => onDeleteCategory(id, name)}
-                    cursor="pointer"
-                    _active={{ transform: 'scale(0.95)' }}
-                  />
-                </Tooltip>
-              </ListItem>
+              <DeleteCategory name={name} id={id} />
             ))}
           </List>
         </Box>
