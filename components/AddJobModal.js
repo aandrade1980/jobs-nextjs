@@ -28,6 +28,7 @@ import {
   UPDATE_JOB_BY_ID_MUTATION
 } from '@/graphql/mutations';
 import {
+  ALL_JOBS_QUERY,
   GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
   GET_CATEGORIES_BY_ID_QUERY,
   GET_JOB_BY_ID_QUERY,
@@ -47,7 +48,8 @@ function AddJobModal({ buttonText, title, job }) {
       {
         query: GET_CATEGORIES_BY_ID_QUERY,
         variables: { _in: job?.categoriesIds }
-      }
+      },
+      { query: ALL_JOBS_QUERY }
     ]
   });
   const [getCategoriesByAuthor, { data: categoriesQueryData }] = useLazyQuery(
