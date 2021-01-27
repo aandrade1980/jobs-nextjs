@@ -1,19 +1,19 @@
 import { Box } from '@chakra-ui/react';
-import React from 'react';
 import { useQuery } from '@apollo/client';
+import nookies from 'nookies';
+import React from 'react';
 
+import { admin } from '@/lib/firebaseAdmin';
 import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
+import { JobsTableHeader } from '@/components/JobsTableHeader';
 import Header from '@/components/Header';
 import JobsTable from '@/components/JobsTable';
 import JobsTableSkeleton from '@/components/JobsTableSkeleton';
-import { JobsTableHeader } from '@/components/JobsTableHeader';
-import { useAuth } from '@/lib/auth';
 
-const Jobs = () => {
-  const { user } = useAuth();
+const Jobs = ({ userId }) => {
   const { loading, error, data } = useQuery(GET_JOBS_BY_AUTHOR_QUERY, {
-    variables: { authorId: user?.uid },
-    skip: user?.uid === undefined
+    variables: { authorId: userId },
+    skip: userId === undefined
   });
 
   // Todo add a error toast
@@ -22,7 +22,7 @@ const Jobs = () => {
     return `Error loading jobs ${error}`;
   }
 
-  if (loading || !user) {
+  if (loading || !userId) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header active="jobs" />
@@ -47,3 +47,21 @@ const Jobs = () => {
 };
 
 export default Jobs;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = nookies.get(context);
+    const token = await admin.auth().verifyIdToken(cookies.token);
+    const { uid } = token;
+
+    return {
+      props: { userId: uid }
+    };
+  } catch (error) {
+    console.error(error);
+    context.res.writeHead(302, { Location: '/' });
+    context.res.end();
+
+    return { props: {} };
+  }
+}

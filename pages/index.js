@@ -14,7 +14,7 @@ export default function Home() {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-          if (localStorage.getItem('post-job-auth')) {
+          if (document.cookie && document.cookie.includes('token')) {
             window.location.href = "/jobs"
           }
         `
