@@ -71,9 +71,11 @@ const JobPage = ({ jobId }) => {
     GET_JOB_BY_ID_QUERY,
     {
       variables: { id: jobId },
-      skip: jobId === undefined
+      skip: jobId === undefined,
+      fetchPolicy: 'cache-and-network'
     }
   );
+
   const {
     loading: loadingCategories,
     error: errorCategories,
