@@ -37,6 +37,7 @@ export const GET_JOB_BY_ID_QUERY = gql`
       createdAt
       description
       email
+      id
       imageUrl
       postedDate
       title
