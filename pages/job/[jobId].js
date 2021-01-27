@@ -18,6 +18,8 @@ import {
 
 import Header from '@/components/Header';
 import { initializeApollo } from '@/lib/apolloClient';
+import AddJobModal from '@/components/AddJobModal';
+import { useQuery } from '@apollo/client';
 
 export async function getStaticPaths() {
   const apolloClient = initializeApollo();
@@ -50,29 +52,45 @@ export async function getStaticProps({ params }) {
     variables: { id: jobId }
   });
 
-  const {
-    data: { categories }
-  } = await apolloClient.query({
+  await apolloClient.query({
     query: GET_CATEGORIES_BY_ID_QUERY,
     variables: { _in: jobs_by_pk.categoriesIds }
   });
 
   return {
     props: {
-      currentJob: {
-        ...jobs_by_pk,
-        id: jobId
-      },
-      categories: [...categories]
+      initialApolloState: apolloClient.cache.extract(),
+      jobId
     },
     revalidate: 1
   };
 }
 
-const JobPage = ({ currentJob, categories }) => {
+const JobPage = ({ jobId }) => {
+  const { loading: loadingJob, error: errorJob, data } = useQuery(
+    GET_JOB_BY_ID_QUERY,
+    {
+      variables: { id: jobId },
+      skip: jobId === undefined,
+      fetchPolicy: 'cache-and-network'
+    }
+  );
+
+  const {
+    loading: loadingCategories,
+    error: errorCategories,
+    data: dataCategories
+  } = useQuery(GET_CATEGORIES_BY_ID_QUERY, {
+    variables: { _in: data?.jobs_by_pk?.categoriesIds },
+    skip: data === undefined
+  });
   const router = useRouter();
 
-  if (router.isFallback) {
+  if (errorJob || errorCategories) {
+    console.error(`Error: ${errorJob || errorCategories}`);
+  }
+
+  if (router.isFallback || loadingJob || loadingCategories) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header />
@@ -96,7 +114,9 @@ const JobPage = ({ currentJob, categories }) => {
     postedDate,
     imageUrl,
     description
-  } = currentJob;
+  } = data.jobs_by_pk;
+
+  const { categories } = dataCategories;
 
   const colorScheme = [
     'green',
@@ -116,6 +136,13 @@ const JobPage = ({ currentJob, categories }) => {
     <Box h="100vh" backgroundColor="gray.100">
       <Header />
       <Box px={8} maxW="1250px" margin="50px auto" backgroundColor="gray.100">
+        <Box display="flex" justifyContent="flex-end" mb={4}>
+          <AddJobModal
+            buttonText="Edit Job"
+            title="Edit Job"
+            job={data.jobs_by_pk}
+          />
+        </Box>
         <Grid
           gridTemplateColumns="1fr 1fr"
           gridTemplateRows="auto"

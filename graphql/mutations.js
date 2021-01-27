@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 
+// Jobs
 export const CREATE_JOB_MUTATION = gql`
   mutation createJob(
     $company: String
@@ -38,6 +39,43 @@ export const DELETE_JOB_BY_ID_MUTATION = gql`
   }
 `;
 
+export const UPDATE_JOB_BY_ID_MUTATION = gql`
+  mutation updateJob(
+    $_eq: uuid
+    $categoriesIds: _text
+    $company: String
+    $description: String
+    $email: String
+    $postedDate: date
+    $title: String
+  ) {
+    update_jobs(
+      where: { id: { _eq: $_eq } }
+      _set: {
+        categoriesIds: $categoriesIds
+        company: $company
+        description: $description
+        email: $email
+        postedDate: $postedDate
+        title: $title
+      }
+    ) {
+      returning {
+        authorId
+        categoriesIds
+        company
+        createdAt
+        description
+        email
+        imageUrl
+        postedDate
+        title
+      }
+    }
+  }
+`;
+
+// Categories
 export const CREATE_CATEGORY_MUTATION = gql`
   mutation createCategory($authorId: String!, $name: String!) {
     insert_categories_one(object: { authorId: $authorId, name: $name }) {
