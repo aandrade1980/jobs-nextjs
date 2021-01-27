@@ -27,18 +27,18 @@ import {
   GET_JOBS_BY_AUTHOR_QUERY
 } from '@/graphql/queries';
 import { useAuth } from '@/lib/auth';
+import { useState } from 'react';
 
 function AddJobModal() {
   const { user } = useAuth();
-  const [createJob, { loading: loadingJobs }] = useMutation(
-    CREATE_JOB_MUTATION
+  const [creatingJob, setCreatingJob] = useState(false);
+  const [createJob] = useMutation(CREATE_JOB_MUTATION);
+  const [getCategoriesByAuthor, { data: categoriesQueryData }] = useLazyQuery(
+    GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
+    {
+      variables: { authorId: user?.uid }
+    }
   );
-  const [
-    getCategoriesByAuthor,
-    { data: categoriesQueryData }
-  ] = useLazyQuery(GET_CATEGORIES_BY_AUTHOR_ID_QUERY, {
-    variables: { authorId: user?.uid }
-  });
   const { register, handleSubmit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -73,6 +73,7 @@ function AddJobModal() {
     categoriesIds,
     image
   }) => {
+    setCreatingJob(true);
     let imageUrl = null;
 
     if (image.length) {
@@ -122,6 +123,7 @@ function AddJobModal() {
         });
       }
     });
+    setCreatingJob(false);
     onClose();
     toast({
       title: 'Job created.',
@@ -225,7 +227,7 @@ function AddJobModal() {
               backgroundColor="#0AF5F4"
               ml={3}
               type="submit"
-              isLoading={loadingJobs}
+              isLoading={creatingJob}
             >
               Create
             </Button>
