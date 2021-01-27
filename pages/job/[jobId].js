@@ -115,7 +115,7 @@ const JobPage = ({ currentJob, categories }) => {
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header />
-      <Box px={8} maxW="1250px" margin="50px auto">
+      <Box px={8} maxW="1250px" margin="50px auto" backgroundColor="gray.100">
         <Grid
           gridTemplateColumns="1fr 1fr"
           gridTemplateRows="auto"

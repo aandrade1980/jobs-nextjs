@@ -59,6 +59,7 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.error(error);
+    nookies.destroy(context, 'token');
     context.res.writeHead(302, { Location: '/' });
     context.res.end();
 

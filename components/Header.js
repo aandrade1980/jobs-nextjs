@@ -78,7 +78,7 @@ export default function Header({ active }) {
           >
             Log Out
           </Link>
-          <Avatar size="sm" src={auth.user?.photoUrl} />
+          <Avatar size="sm" src={auth.user?.photoURL} />
         </Flex>
       </Flex>
     </Flex>
