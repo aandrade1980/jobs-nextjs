@@ -97,7 +97,9 @@ const Categories = () => {
   };
 
   const alreadyExists = categoryName =>
-    categories.every(category => category.name !== categoryName);
+    categories.every(
+      category => category.name.toLowerCase() !== categoryName.toLowerCase()
+    );
 
   return (
     <Box h="100vh" backgroundColor="gray.100">
