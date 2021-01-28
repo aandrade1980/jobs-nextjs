@@ -40,7 +40,6 @@ function AddJobModal({ buttonText, title, job }) {
   const { user } = useAuth();
   const [creatingJob, setCreatingJob] = useState(false);
   const [createJob] = useMutation(CREATE_JOB_MUTATION);
-
   const [updateJob] = useMutation(UPDATE_JOB_BY_ID_MUTATION, {
     variables: { id: job?.id },
     refetchQueries: [
@@ -49,7 +48,7 @@ function AddJobModal({ buttonText, title, job }) {
         query: GET_CATEGORIES_BY_ID_QUERY,
         variables: { _in: job?.categoriesIds }
       },
-      { query: ALL_JOBS_QUERY }
+      { query: GET_JOBS_BY_AUTHOR_QUERY, variables: { authorId: user?.uid } }
     ]
   });
   const [getCategoriesByAuthor, { data: categoriesQueryData }] = useLazyQuery(
