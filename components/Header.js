@@ -14,7 +14,7 @@ export default function Header({ active }) {
           display: flex;
           width: 100%;
           margin-bottom: 2rem;
-          background-color: rgba(255, 255, 255, 0.3);
+          background-color: rgba(255, 255, 255, 0.5);
           -webkit-position: sticky;
           position: sticky;
           top: 0;
