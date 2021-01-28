@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   FormControl,
+  Heading,
   Input,
   List,
   Spinner,
@@ -30,7 +31,7 @@ const Categories = () => {
     CREATE_CATEGORY_MUTATION
   );
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, errors } = useForm();
   const toast = useToast();
 
   if (loading || !user) {
@@ -95,10 +96,13 @@ const Categories = () => {
     e.target.reset();
   };
 
+  const alreadyExists = categoryName =>
+    categories.every(category => category.name !== categoryName);
+
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header active="categories" />
-      <Flex flexDirection="column" maxW="1250px" margin="0 auto">
+      <Flex maxW="1250px" margin="0 auto" flexDirection="column">
         <Flex
           as="form"
           onSubmit={handleSubmit(onSubmit)}
@@ -110,9 +114,40 @@ const Categories = () => {
             <Input
               name="name"
               placeholder="Javascript"
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                validate: alreadyExists
+              })}
               backgroundColor="white"
+              isInvalid={errors.name}
+              errorBorderColor="red.500"
+              focusBorderColor={errors.name ? 'red.500' : 'blue.500'}
             />
+            {/* use role="alert" to announce the error message */}
+            {errors.name?.type === 'required' && (
+              <Heading
+                as="span"
+                size="xs"
+                role="alert"
+                color="red.500"
+                fontWeight="700"
+                ml={1}
+              >
+                This is required
+              </Heading>
+            )}
+            {errors.name?.type === 'validate' && (
+              <Heading
+                as="span"
+                size="xs"
+                role="alert"
+                color="red.500"
+                fontWeight="700"
+                ml={1}
+              >
+                Category already exists
+              </Heading>
+            )}
           </FormControl>
           <Button
             backgroundColor="gray.900"
@@ -129,8 +164,15 @@ const Categories = () => {
             + Add Category
           </Button>
         </Flex>
-        <Box px={9} pt={4}>
-          <List spacing={3}>
+        <Box px={9}>
+          <List
+            spacing={3}
+            display="grid"
+            gridTemplateColumns="auto auto"
+            gridColumnGap="50px"
+            alignItems="end"
+            width="fit-content"
+          >
             {categories.map(({ name, id }) => (
               <DeleteCategory key={id} name={name} id={id} />
             ))}

@@ -8,7 +8,20 @@ export default function Header({ active }) {
   const auth = useAuth();
 
   return (
-    <Flex backgroundColor="white" w="full" mb={8}>
+    <div>
+      <style jsx>{`
+        div {
+          display: flex;
+          width: 100%;
+          margin-bottom: 2rem;
+          background-color: rgba(255, 255, 255, 0.3);
+          -webkit-position: sticky;
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          backdrop-filter: blur(10px);
+        }
+      `}</style>
       <Flex
         alignItems="center"
         justifyContent="space-between"
@@ -25,7 +38,6 @@ export default function Header({ active }) {
               alignContent="center"
               flexDirection="column"
               alignItems="center"
-              borderBottomColor="red"
               justifyContent="center"
               px={4}
               py={1}
@@ -81,6 +93,6 @@ export default function Header({ active }) {
           <Avatar size="sm" src={auth.user?.photoURL} />
         </Flex>
       </Flex>
-    </Flex>
+    </div>
   );
 }
