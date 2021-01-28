@@ -135,8 +135,15 @@ const JobPage = ({ jobId }) => {
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header />
-      <Box px={8} maxW="1250px" margin="50px auto" backgroundColor="gray.100">
-        <Box display="flex" justifyContent="flex-end" mb={4}>
+      <Box px={8} maxW="1250px" margin="35px auto" backgroundColor="gray.100">
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          mb={6}
+          position="sticky"
+          top="70px"
+          zIndex="1"
+        >
           <AddJobModal
             buttonText="Edit Job"
             title="Edit Job"

@@ -58,7 +58,7 @@ const DeleteCategory = ({ name, id }) => {
           <Tooltip label="Delete Category" fontSize="xs">
             <DeleteIcon
               color="red.500"
-              ml={2}
+              ml={6}
               onClick={() => onDeleteCategory(id, name)}
               cursor="pointer"
               _active={{ transform: 'scale(0.95)' }}
