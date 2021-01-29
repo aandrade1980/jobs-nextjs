@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/auth';
 
 const DeleteCategory = ({ name, id }) => {
   const { user } = useAuth();
+  const authorId = user?.uid;
   const [deleteCategory, { loading }] = useMutation(
     DELETE_CATEGORY_BY_ID_MUTATION
   );
@@ -20,7 +21,7 @@ const DeleteCategory = ({ name, id }) => {
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId: user?.uid }
+          variables: { authorId }
         });
 
         const deletedCat = data['delete_categories_by_pk'];
@@ -31,7 +32,7 @@ const DeleteCategory = ({ name, id }) => {
 
         cache.writeQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId: user?.uid },
+          variables: { authorId },
           data: {
             categories: updatedCategories
           }

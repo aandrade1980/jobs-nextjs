@@ -96,12 +96,29 @@ function AddJobModal({ buttonText, title, job }) {
           postedDate,
           title
         },
+        optimisticResponse: {
+          update_jobs: {
+            returning: [
+              {
+                categoriesIds,
+                company,
+                description,
+                email,
+                postedDate,
+                title,
+                id: job.id,
+                __typename: 'jobs'
+              }
+            ],
+            __typename: 'jobs_mutation_response'
+          }
+        },
         update: (cache, { data: { update_jobs } }) => {
           cache.writeQuery({
             query: GET_JOB_BY_ID_QUERY,
             variables: { id: job.id },
             data: {
-              jobs_by_pk: { ...update_jobs.returning[0] }
+              jobs_by_pk: update_jobs.returning[0]
             }
           });
         }

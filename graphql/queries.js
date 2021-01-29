@@ -18,6 +18,7 @@ export const GET_JOBS_BY_AUTHOR_QUERY = gql`
       company
       email
       id
+      imageUrl
       postedDate
       title
     }

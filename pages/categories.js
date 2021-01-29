@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
 
 import Header from '@/components/Header';
 import DeleteCategory from '@/components/DeleteCategory';
@@ -58,6 +59,14 @@ const Categories = () => {
   const onSubmit = async ({ name }, e) => {
     await createCategory({
       variables: { name, authorId },
+      optimisticResponse: {
+        insert_categories_one: {
+          name,
+          authorId,
+          id: uuidv4(),
+          __typename: 'Categories'
+        }
+      },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
