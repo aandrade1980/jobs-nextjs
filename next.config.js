@@ -1,5 +1,5 @@
 module.exports = {
   images: {
-    domains: ['nextjs-job-post.s3.sa-east-1.amazonaws.com']
+    domains: ['nextjs-job-post.s3.sa-east-1.amazonaws.com', 'i.scdn.co']
   }
 };

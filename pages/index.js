@@ -3,6 +3,7 @@ import { Box, Button, Heading } from '@chakra-ui/react';
 
 import { GoogleIcon } from '@/components/Icons';
 import { useAuth } from '@/lib/auth';
+import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
   const auth = useAuth();
@@ -44,6 +45,7 @@ export default function Home() {
           Continue with Google
         </Button>
       </Box>
+      <NowPlaying />
     </div>
   );
 }
