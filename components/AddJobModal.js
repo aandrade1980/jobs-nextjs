@@ -28,9 +28,7 @@ import {
   UPDATE_JOB_BY_ID_MUTATION
 } from '@/graphql/mutations';
 import {
-  ALL_JOBS_QUERY,
   GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-  GET_CATEGORIES_BY_ID_QUERY,
   GET_JOB_BY_ID_QUERY,
   GET_JOBS_BY_AUTHOR_QUERY
 } from '@/graphql/queries';
@@ -41,15 +39,7 @@ function AddJobModal({ buttonText, title, job }) {
   const [creatingJob, setCreatingJob] = useState(false);
   const [createJob] = useMutation(CREATE_JOB_MUTATION);
   const [updateJob] = useMutation(UPDATE_JOB_BY_ID_MUTATION, {
-    variables: { id: job?.id },
-    refetchQueries: [
-      { query: GET_JOB_BY_ID_QUERY, variables: { id: job?.id } },
-      {
-        query: GET_CATEGORIES_BY_ID_QUERY,
-        variables: { _in: job?.categoriesIds }
-      },
-      { query: GET_JOBS_BY_AUTHOR_QUERY, variables: { authorId: user?.uid } }
-    ]
+    variables: { id: job?.id }
   });
   const [getCategoriesByAuthor, { data: categoriesQueryData }] = useLazyQuery(
     GET_CATEGORIES_BY_AUTHOR_ID_QUERY,

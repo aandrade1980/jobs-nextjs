@@ -3,6 +3,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 
 import { useAuth } from '@/lib/auth';
+import NowPlaying from './NowPlaying';
 
 export default function Header({ active }) {
   const auth = useAuth();
@@ -82,8 +83,9 @@ export default function Header({ active }) {
           </NextLink>
         </Flex>
         <Flex justifyContent="center" alignItems="center">
+          <NowPlaying />
           <Link
-            mr={5}
+            mx={5}
             fontSize="sm"
             color="gray.600"
             onClick={() => auth.signout()}
