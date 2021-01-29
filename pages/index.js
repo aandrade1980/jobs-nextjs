@@ -30,6 +30,7 @@ export default function Home() {
         justify="center"
         bg="gray.100"
         py={24}
+        mb={12}
       >
         <Heading>Welcome to Jobs Post</Heading>
         <Button

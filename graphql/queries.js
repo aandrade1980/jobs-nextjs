@@ -15,14 +15,9 @@ export const GET_JOBS_BY_AUTHOR_QUERY = gql`
       where: { authorId: { _eq: $authorId } }
       order_by: { postedDate: desc }
     ) {
-      authorId
-      categoriesIds
       company
-      createdAt
-      description
       email
       id
-      imageUrl
       postedDate
       title
     }
@@ -34,7 +29,6 @@ export const GET_JOB_BY_ID_QUERY = gql`
     jobs_by_pk(id: $id) {
       categoriesIds
       company
-      createdAt
       description
       email
       id

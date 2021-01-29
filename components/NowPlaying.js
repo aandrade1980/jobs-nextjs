@@ -5,11 +5,11 @@ import Image from 'next/image';
 
 import fetcher from '@/lib/fetcher';
 
-export default function NowPlaying() {
+export default function NowPlaying({ showArtist = true }) {
   const { data } = useSwr('/api/now-playing', fetcher);
 
   return (
-    <Center mt={16}>
+    <Center>
       <svg width="1rem" height="1rem" viewBox="0 0 168 168">
         <path
           fill="#1ED760"
@@ -36,9 +36,11 @@ export default function NowPlaying() {
         <Text as="span" mx={2} color="gray.500">
           {'-'}
         </Text>
-        <Text isTruncated color="gray.500" mr={4}>
-          {data?.artist || 'Spotify'}
-        </Text>
+        {showArtist && (
+          <Text isTruncated color="gray.500" mr={2} maxW="250px">
+            {data?.artist || 'Spotify'}
+          </Text>
+        )}
         {data?.albumImageUrl && (
           <>
             <Image

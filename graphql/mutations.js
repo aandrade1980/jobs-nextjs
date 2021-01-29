@@ -61,12 +61,11 @@ export const UPDATE_JOB_BY_ID_MUTATION = gql`
       }
     ) {
       returning {
-        authorId
         categoriesIds
         company
-        createdAt
         description
         email
+        id
         imageUrl
         postedDate
         title
@@ -79,7 +78,6 @@ export const UPDATE_JOB_BY_ID_MUTATION = gql`
 export const CREATE_CATEGORY_MUTATION = gql`
   mutation createCategory($authorId: String!, $name: String!) {
     insert_categories_one(object: { authorId: $authorId, name: $name }) {
-      createdAt
       id
     }
   }
