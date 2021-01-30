@@ -32,7 +32,7 @@ export default function Home() {
         py={24}
         mb={12}
       >
-        <Heading>Welcome to Jobs Post</Heading>
+        <Heading>Welcome to Post Jobs</Heading>
         <Button
           mt={8}
           leftIcon={<GoogleIcon />}
