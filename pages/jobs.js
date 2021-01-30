@@ -11,39 +11,40 @@ import JobsTable from '@/components/JobsTable';
 import JobsTableSkeleton from '@/components/JobsTableSkeleton';
 import Page from '@/components/Page';
 
+const LoadingState = ({ children }) => (
+  <Box h="100vh" backgroundColor="gray.100">
+    <Header active="jobs" />
+    <Box px={8} maxW="1250px" margin="0 auto">
+      {children}
+    </Box>
+  </Box>
+);
+
 const Jobs = ({ userId }) => {
-  const { loading, error, data } = useQuery(GET_JOBS_BY_AUTHOR_QUERY, {
-    variables: { authorId: userId },
-    skip: userId === undefined
-  });
+  const { loading: loadingJobs, error, data } = useQuery(
+    GET_JOBS_BY_AUTHOR_QUERY,
+    {
+      variables: { authorId: userId },
+      skip: userId === undefined
+    }
+  );
 
-  // Todo add a error toast
-  if (error) {
-    console.error(`Error getting jobs: ${error}`);
-    return `Error loading jobs ${error}`;
-  }
-
-  if (loading || !userId) {
+  if (error || loadingJobs || !userId) {
+    error && console.error(`Error in Jobs page: ${error}`);
     return (
-      <Box h="100vh" backgroundColor="gray.100">
-        <Header active="jobs" />
-        <Box px={8} maxW="1250px" margin="0 auto">
-          <JobsTableSkeleton />
-        </Box>
-      </Box>
+      <LoadingState>
+        <JobsTableSkeleton />
+      </LoadingState>
     );
   }
 
   const { jobs: allJobs } = data;
 
   return (
-    <Box minH="100vh" backgroundColor="gray.100">
-      <Header active="jobs" />
-      <Box px={8} maxW="1250px" margin="0 auto">
-        <JobsTableHeader />
-        <JobsTable jobs={allJobs} />
-      </Box>
-    </Box>
+    <LoadingState>
+      <JobsTableHeader />
+      <JobsTable jobs={allJobs} />
+    </LoadingState>
   );
 };
 
