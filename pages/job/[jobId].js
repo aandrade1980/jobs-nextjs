@@ -133,7 +133,7 @@ const JobPage = ({ jobId }) => {
     colorScheme[Math.floor(Math.random() * colorScheme.length)];
 
   return (
-    <Box h="100vh" backgroundColor="gray.100">
+    <Box minH="100vh" backgroundColor="gray.100">
       <Header />
       <Box px={8} maxW="1250px" margin="35px auto" backgroundColor="gray.100">
         <Box

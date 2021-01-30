@@ -37,7 +37,7 @@ const Jobs = ({ userId }) => {
   const { jobs: allJobs } = data;
 
   return (
-    <Box h="100vh" backgroundColor="gray.100">
+    <Box minH="100vh" backgroundColor="gray.100">
       <Header active="jobs" />
       <Box px={8} maxW="1250px" margin="0 auto">
         <JobsTableHeader />
