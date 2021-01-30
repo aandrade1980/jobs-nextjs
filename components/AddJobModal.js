@@ -125,54 +125,55 @@ function AddJobModal({ buttonText, title, job }) {
       });
     } else {
       let imageUrl = null;
+      let file, fileName, filePath;
 
       if (image.length) {
-        const file = image[0];
-        const fileName = file.name;
-        const filePath = `${encodeURIComponent(
-          title
-        )}-${Date.now()}/${fileName}`;
+        file = image[0];
+        fileName = file.name;
+        filePath = `${encodeURIComponent(title)}-${Date.now()}/${fileName}`;
 
-        const result = await s3
-          .upload({
-            Key: filePath,
-            Body: file,
-            ACL: 'public-read'
-          })
-          .promise();
-
-        imageUrl = result.Location;
+        // Todo move s3 url to .env file
+        imageUrl = `http://nextjs-job-post.s3.sa-east-1.amazonaws.com/${encodeURIComponent(
+          filePath
+        )}`;
       }
 
-      await createJob({
-        variables: {
-          title,
-          company,
-          email,
-          postedDate: new Date(postedDate),
-          description,
-          categoriesIds: parsedCategoriesIds,
-          authorId: user.uid,
-          imageUrl
-        },
-        update: (cache, { data }) => {
-          const cacheData = cache.readQuery({
-            query: GET_JOBS_BY_AUTHOR_QUERY,
-            variables: { authorId: user.uid }
-          });
+      await Promise.all([
+        image.length
+          ? s3
+              .upload({ Key: filePath, Body: file, ACL: 'public-read' })
+              .promise()
+          : null,
+        createJob({
+          variables: {
+            authorId: user.uid,
+            categoriesIds: parsedCategoriesIds,
+            company,
+            description,
+            email,
+            imageUrl,
+            postedDate: new Date(postedDate),
+            title
+          },
+          update: (cache, { data }) => {
+            const cacheData = cache.readQuery({
+              query: GET_JOBS_BY_AUTHOR_QUERY,
+              variables: { authorId: user.uid }
+            });
 
-          const newJob = data['insert_jobs'].returning[0];
+            const newJob = data['insert_jobs'].returning[0];
 
-          cache.writeQuery({
-            query: GET_JOBS_BY_AUTHOR_QUERY,
-            variables: { authorId: user.uid },
-            data: {
-              ...cacheData,
-              jobs: [newJob, ...cacheData.jobs]
-            }
-          });
-        }
-      });
+            cache.writeQuery({
+              query: GET_JOBS_BY_AUTHOR_QUERY,
+              variables: { authorId: user.uid },
+              data: {
+                ...cacheData,
+                jobs: [newJob, ...cacheData.jobs]
+              }
+            });
+          }
+        })
+      ]);
     }
 
     setCreatingJob(false);
