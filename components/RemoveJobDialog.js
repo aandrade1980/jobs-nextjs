@@ -28,7 +28,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
 
   const onDeleteJob = async () => {
     if (imageUrl) {
-      const [, , , folder, fileName] = decodeURI(imageUrl).split('/');
+      const [, , , folder, fileName] = decodeURIComponent(imageUrl).split('/');
 
       const params = {
         Bucket: 'nextjs-job-post',
