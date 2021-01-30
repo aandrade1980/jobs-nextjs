@@ -9,6 +9,7 @@ import { JobsTableHeader } from '@/components/JobsTableHeader';
 import Header from '@/components/Header';
 import JobsTable from '@/components/JobsTable';
 import JobsTableSkeleton from '@/components/JobsTableSkeleton';
+import Page from '@/components/Page';
 
 const Jobs = ({ userId }) => {
   const { loading, error, data } = useQuery(GET_JOBS_BY_AUTHOR_QUERY, {
@@ -46,7 +47,13 @@ const Jobs = ({ userId }) => {
   );
 };
 
-export default Jobs;
+const JobsPage = ({ userId }) => (
+  <Page name="Jobs" path="/jobs">
+    <Jobs userId={userId} />
+  </Page>
+);
+
+export default JobsPage;
 
 export async function getServerSideProps(context) {
   try {

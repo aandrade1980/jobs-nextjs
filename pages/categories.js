@@ -20,6 +20,7 @@ import DeleteCategory from '@/components/DeleteCategory';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useAuth } from '@/lib/auth';
+import Page from '@/components/Page';
 
 const Categories = () => {
   const { user } = useAuth();
@@ -194,4 +195,10 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+const CategoriesPage = () => (
+  <Page name="Categories" path="/categories">
+    <Categories />
+  </Page>
+);
+
+export default CategoriesPage;
