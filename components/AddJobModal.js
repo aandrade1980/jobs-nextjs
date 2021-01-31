@@ -36,6 +36,7 @@ import { useAuth } from '@/lib/auth';
 
 function AddJobModal({ buttonText, title, job }) {
   const { user } = useAuth();
+  const authorId = user?.uid;
   const [creatingJob, setCreatingJob] = useState(false);
   const [createJob] = useMutation(CREATE_JOB_MUTATION);
   const [updateJob] = useMutation(UPDATE_JOB_BY_ID_MUTATION, {
@@ -44,7 +45,7 @@ function AddJobModal({ buttonText, title, job }) {
   const [getCategoriesByAuthor, { data: categoriesQueryData }] = useLazyQuery(
     GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
     {
-      variables: { authorId: job?.authorId }
+      variables: { authorId }
     }
   );
   const { control, register, handleSubmit } = useForm();
@@ -133,7 +134,7 @@ function AddJobModal({ buttonText, title, job }) {
           : null,
         createJob({
           variables: {
-            authorId: user.uid,
+            authorId,
             categoriesIds: parsedCategoriesIds,
             company,
             description,
@@ -145,14 +146,14 @@ function AddJobModal({ buttonText, title, job }) {
           update: (cache, { data }) => {
             const cacheData = cache.readQuery({
               query: GET_JOBS_BY_AUTHOR_QUERY,
-              variables: { authorId: user.uid }
+              variables: { authorId }
             });
 
             const newJob = data['insert_jobs'].returning[0];
 
             cache.writeQuery({
               query: GET_JOBS_BY_AUTHOR_QUERY,
-              variables: { authorId: user.uid },
+              variables: { authorId },
               data: {
                 ...cacheData,
                 jobs: [newJob, ...cacheData.jobs]
