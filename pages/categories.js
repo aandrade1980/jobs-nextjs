@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import {
   Box,
   Button,
@@ -21,14 +21,12 @@ import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useAuth } from '@/lib/auth';
 import Page from '@/components/Page';
+import { useCategoriesByAuthor } from '@/graphql/hooks';
 
 const Categories = () => {
   const { user } = useAuth();
   const authorId = user?.uid;
-  const { loading, error, data } = useQuery(GET_CATEGORIES_BY_AUTHOR_ID_QUERY, {
-    variables: { authorId },
-    skip: authorId === undefined
-  });
+  const { loading, error, data } = useCategoriesByAuthor(authorId);
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
   );

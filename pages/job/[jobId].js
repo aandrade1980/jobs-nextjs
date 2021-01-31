@@ -16,10 +16,10 @@ import {
   GET_JOB_BY_ID_QUERY
 } from '@/graphql/queries';
 
-import Header from '@/components/Header';
-import { initializeApollo } from '@/lib/apolloClient';
+import { addApolloState, initializeApollo } from '@/lib/apolloClient';
+import { useCategoriesById, useJobById } from '@/graphql/hooks';
 import AddJobModal from '@/components/AddJobModal';
-import { useQuery } from '@apollo/client';
+import Header from '@/components/Header';
 
 export async function getStaticPaths() {
   const apolloClient = initializeApollo();
@@ -45,46 +45,33 @@ export async function getStaticProps({ params }) {
   const { jobId } = params;
   const apolloClient = initializeApollo();
 
-  const {
-    data: { jobs_by_pk }
-  } = await apolloClient.query({
+  const { data } = await apolloClient.query({
     query: GET_JOB_BY_ID_QUERY,
     variables: { id: jobId }
   });
 
   await apolloClient.query({
     query: GET_CATEGORIES_BY_ID_QUERY,
-    variables: { _in: jobs_by_pk.categoriesIds }
+    variables: { _in: data.jobs_by_pk.categoriesIds }
   });
 
-  return {
-    props: {
-      initialApolloState: apolloClient.cache.extract(),
-      jobId
-    },
-    revalidate: 1
-  };
+  return addApolloState(apolloClient, {
+    props: {}
+  });
 }
 
-const JobPage = ({ jobId }) => {
-  const { loading: loadingJob, error: errorJob, data } = useQuery(
-    GET_JOB_BY_ID_QUERY,
-    {
-      variables: { id: jobId },
-      skip: jobId === undefined,
-      fetchPolicy: 'cache-and-network'
-    }
-  );
+const JobPage = () => {
+  const router = useRouter();
+  const {
+    query: { jobId }
+  } = router;
+  const { loading: loadingJob, error: errorJob, data } = useJobById(jobId);
 
   const {
     loading: loadingCategories,
     error: errorCategories,
     data: dataCategories
-  } = useQuery(GET_CATEGORIES_BY_ID_QUERY, {
-    variables: { _in: data?.jobs_by_pk?.categoriesIds },
-    skip: data === undefined
-  });
-  const router = useRouter();
+  } = useCategoriesById(data?.jobs_by_pk?.categoriesIds);
 
   if (errorJob || errorCategories) {
     console.error(`Error: ${errorJob || errorCategories}`);
