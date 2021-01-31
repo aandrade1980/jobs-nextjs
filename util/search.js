@@ -16,7 +16,8 @@ function useProvideSearch() {
 
   return {
     onSearch,
-    search
+    search,
+    setSearch
   };
 }
 
