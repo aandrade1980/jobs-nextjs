@@ -5,6 +5,7 @@ import React from 'react';
 
 import { admin } from '@/lib/firebaseAdmin';
 import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
+import { useSearch } from '@/util/search';
 import { JobsTableHeader } from '@/components/JobsTableHeader';
 import Header from '@/components/Header';
 import JobsTable from '@/components/JobsTable';
@@ -21,6 +22,7 @@ const LoadingState = ({ children }) => (
 );
 
 const Jobs = ({ userId }) => {
+  const { search } = useSearch();
   const { loading: loadingJobs, error, data } = useQuery(
     GET_JOBS_BY_AUTHOR_QUERY,
     {
@@ -40,10 +42,16 @@ const Jobs = ({ userId }) => {
 
   const { jobs: allJobs } = data;
 
+  const filteredJobs = allJobs.filter(
+    job =>
+      job.title.toLowerCase().includes(search.toLowerCase()) ||
+      job.company.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <LoadingState>
       <JobsTableHeader />
-      <JobsTable jobs={allJobs} />
+      <JobsTable jobs={filteredJobs} />
     </LoadingState>
   );
 };
