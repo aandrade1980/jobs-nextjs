@@ -7,6 +7,7 @@ import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
   const auth = useAuth();
+
   return (
     <div>
       <Head>

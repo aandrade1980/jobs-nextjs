@@ -8,7 +8,11 @@ import { useApollo } from '@/lib/apolloClient';
 import { AuthProvider } from '@/lib/auth';
 import { ProvideSearch } from '@/util/search';
 
+import { init } from '@/util/sentry';
+
 import SEO from '../next-seo.config';
+
+init();
 
 const GlobalStyle = ({ children }) => (
   <>
@@ -30,8 +34,9 @@ const GlobalStyle = ({ children }) => (
   </>
 );
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, err }) {
   const apolloClient = useApollo(pageProps);
+
   return (
     <AuthProvider>
       <ApolloProvider client={apolloClient}>
@@ -39,7 +44,7 @@ function MyApp({ Component, pageProps }) {
           <ThemeProvider theme={theme}>
             <GlobalStyle />
             <DefaultSeo {...SEO} />
-            <Component {...pageProps} />
+            <Component {...pageProps} err={err} />
           </ThemeProvider>
         </ProvideSearch>
       </ApolloProvider>
