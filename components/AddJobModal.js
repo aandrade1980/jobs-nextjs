@@ -86,43 +86,30 @@ function AddJobModal({ buttonText, title, job }) {
     const parsedCategoriesIds = parseCategoriesIds(categoriesIds);
 
     if (job) {
-      await updateJob({
-        variables: {
-          _eq: job.id,
-          categoriesIds: parsedCategoriesIds,
-          company,
-          description,
-          email,
-          postedDate,
-          title
-        },
-        optimisticResponse: {
-          update_jobs: {
-            returning: [
-              {
-                categoriesIds,
-                company,
-                description,
-                email,
-                postedDate,
-                title,
-                id: job.id,
-                __typename: 'jobs'
+      try {
+        await updateJob({
+          variables: {
+            _eq: job.id,
+            categoriesIds: parsedCategoriesIds,
+            company,
+            description,
+            email,
+            postedDate,
+            title
+          },
+          update: (cache, { data: { update_jobs } }) => {
+            cache.writeQuery({
+              query: GET_JOB_BY_ID_QUERY,
+              variables: { id: job.id },
+              data: {
+                jobs_by_pk: update_jobs.returning[0]
               }
-            ],
-            __typename: 'jobs_mutation_response'
+            });
           }
-        },
-        update: (cache, { data: { update_jobs } }) => {
-          cache.writeQuery({
-            query: GET_JOB_BY_ID_QUERY,
-            variables: { id: job.id },
-            data: {
-              jobs_by_pk: update_jobs.returning[0]
-            }
-          });
-        }
-      });
+        });
+      } catch (error) {
+        console.log(`Error updating job: ${error}`);
+      }
     } else {
       let imageUrl = null;
       let file, fileName, filePath;

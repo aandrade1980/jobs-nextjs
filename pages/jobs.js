@@ -1,16 +1,15 @@
 import { Box } from '@chakra-ui/react';
-import { useQuery } from '@apollo/client';
 import nookies from 'nookies';
 import React from 'react';
 
 import { admin } from '@/lib/firebaseAdmin';
-import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
 import { useSearch } from '@/util/search';
 import { JobsTableHeader } from '@/components/JobsTableHeader';
 import Header from '@/components/Header';
 import JobsTable from '@/components/JobsTable';
 import JobsTableSkeleton from '@/components/JobsTableSkeleton';
 import Page from '@/components/Page';
+import { useJobsByAuthor } from '@/graphql/hooks';
 
 const LoadingState = ({ children }) => (
   <Box h="100vh" backgroundColor="gray.100">
@@ -22,14 +21,8 @@ const LoadingState = ({ children }) => (
 );
 
 const Jobs = ({ userId }) => {
+  const { loading: loadingJobs, error, data } = useJobsByAuthor(userId);
   const { search } = useSearch();
-  const { loading: loadingJobs, error, data } = useQuery(
-    GET_JOBS_BY_AUTHOR_QUERY,
-    {
-      variables: { authorId: userId },
-      skip: userId === undefined
-    }
-  );
 
   if (error || loadingJobs || !userId) {
     error && console.error(`Error in Jobs page: ${error}`);

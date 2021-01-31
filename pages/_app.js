@@ -31,7 +31,7 @@ const GlobalStyle = ({ children }) => (
 );
 
 function MyApp({ Component, pageProps }) {
-  const apolloClient = useApollo(pageProps.initialApolloState);
+  const apolloClient = useApollo(pageProps);
   return (
     <AuthProvider>
       <ApolloProvider client={apolloClient}>
