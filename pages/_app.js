@@ -6,6 +6,7 @@ import { DefaultSeo } from 'next-seo';
 import theme from '@/styles/theme';
 import { useApollo } from '@/lib/apolloClient';
 import { AuthProvider } from '@/lib/auth';
+import { ProvideSearch } from '@/util/search';
 
 import SEO from '../next-seo.config';
 
@@ -34,11 +35,13 @@ function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
       <ApolloProvider client={apolloClient}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <DefaultSeo {...SEO} />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <ProvideSearch>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            <DefaultSeo {...SEO} />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </ProvideSearch>
       </ApolloProvider>
     </AuthProvider>
   );
