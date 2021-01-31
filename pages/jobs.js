@@ -12,7 +12,7 @@ import Page from '@/components/Page';
 import { useJobsByAuthor } from '@/graphql/hooks';
 
 const LoadingState = ({ children }) => (
-  <Box h="100vh" backgroundColor="gray.100">
+  <Box minH="100vh" backgroundColor="gray.100">
     <Header active="jobs" />
     <Box px={8} maxW="1250px" margin="0 auto">
       {children}
