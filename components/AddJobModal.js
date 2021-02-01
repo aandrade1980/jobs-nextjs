@@ -14,6 +14,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Switch,
   Textarea,
   useDisclosure,
   useToast
@@ -51,6 +52,7 @@ function AddJobModal({ buttonText, title, job }) {
   const { control, register, handleSubmit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const [requestSent, setRequestSent] = useState(job?.requestSent || false);
 
   const openModal = () => {
     getCategoriesByAuthor();
@@ -96,6 +98,7 @@ function AddJobModal({ buttonText, title, job }) {
             description,
             email,
             postedDate,
+            requestSent,
             title
           },
           update: (cache, { data: { update_jobs } }) => {
@@ -141,6 +144,7 @@ function AddJobModal({ buttonText, title, job }) {
             email,
             imageUrl,
             postedDate: new Date(postedDate),
+            requestSent,
             title
           },
           update: (cache, { data }) => {
@@ -229,8 +233,16 @@ function AddJobModal({ buttonText, title, job }) {
                 defaultValue={job?.email || ''}
               />
             </FormControl>
-            <FormControl mt={3}>
+            <FormControl mt={3} display="grid" gridTemplateColumns="1fr 1fr">
+              <FormLabel>Request Sent</FormLabel>
               <FormLabel>Date Posted</FormLabel>
+              <Switch
+                isChecked={requestSent}
+                onChange={() => setRequestSent(!requestSent)}
+                name="requestSent"
+                ref={register}
+                alignSelf="center"
+              />
               <Controller
                 as={<Input type="date" />}
                 control={control}

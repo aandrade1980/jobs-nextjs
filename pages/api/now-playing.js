@@ -8,6 +8,13 @@ export default async (_, res) => {
   }
 
   const song = await response.json();
+
+  if (!song.item && song.currently_playing_type === 'ad') {
+    return res.status(200).json({
+      title: 'Playing Ads'
+    });
+  }
+
   const isPlaying = song.is_playing;
   const title = song.item.name;
   const artist = song.item.artists.map(_artist => _artist.name).join(', ');

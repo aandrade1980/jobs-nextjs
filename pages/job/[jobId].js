@@ -20,6 +20,7 @@ import { addApolloState, initializeApollo } from '@/lib/apolloClient';
 import { useCategoriesById, useJobById } from '@/graphql/hooks';
 import AddJobModal from '@/components/AddJobModal';
 import Header from '@/components/Header';
+import { CheckIcon } from '@chakra-ui/icons';
 
 export async function getStaticPaths() {
   const apolloClient = initializeApollo();
@@ -95,12 +96,13 @@ const JobPage = () => {
   }
 
   const {
-    title,
     company,
+    description,
     email,
-    postedDate,
     imageUrl,
-    description
+    postedDate,
+    requestSent,
+    title
   } = data.jobs_by_pk;
 
   const { categories } = dataCategories;
@@ -144,8 +146,9 @@ const JobPage = () => {
           rowGap="20px"
           alignItems="center"
         >
-          <Heading as="h2" size="2xl" gridArea="title">
+          <Heading as="h2" size="2xl" gridArea="title" display="flex" alignItems="center">
             {title}
+            {requestSent && <CheckIcon ml={2} color="green.500" h={8} h={8} />}
           </Heading>
           <Heading as="h3" size="lg" gridArea="company">
             {company}

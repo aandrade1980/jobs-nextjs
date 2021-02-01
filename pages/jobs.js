@@ -24,7 +24,7 @@ const Jobs = ({ userId }) => {
   const { loading: loadingJobs, error, data } = useJobsByAuthor(userId);
   const { search } = useSearch();
 
-  if (error || loadingJobs || !userId) {
+  if (error || loadingJobs) {
     error && console.error(`Error in Jobs page: ${error}`);
     return (
       <LoadingState>

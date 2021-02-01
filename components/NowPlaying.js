@@ -30,7 +30,7 @@ export default function NowPlaying({ showArtist = true }) {
           </NextLink>
         ) : (
           <Text color="gray.800" fontWeight="medium">
-            Not Playing
+            {data?.title || 'Not Playing'}
           </Text>
         )}
         <Text as="span" mx={2} color="gray.500">
