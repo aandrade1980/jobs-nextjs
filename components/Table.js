@@ -42,8 +42,8 @@ export const Table = props => (
     width="100%"
     textAlign="left"
     backgroundColor="white"
-    ml={0}
-    mr={0}
+    mx={0}
+    mb={4}
     borderRadius={8}
     boxShadow="0px 4px 10px rgba(0, 0, 0, 0.05)"
     {...props}
