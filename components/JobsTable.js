@@ -1,3 +1,4 @@
+import { CheckCircleIcon, CheckIcon } from '@chakra-ui/icons';
 import { Box, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
@@ -10,13 +11,13 @@ const JobsTable = ({ jobs }) => (
       <Tr>
         <Th>Title</Th>
         <Th>Company</Th>
-        <Th>Email</Th>
         <Th>Date Posted</Th>
+        <Th>Request Sent</Th>
         <Th>{''}</Th>
       </Tr>
     </thead>
     <tbody>
-      {jobs.map(({ id, title, company, postedDate, email, imageUrl }) => (
+      {jobs.map(({ id, title, company, postedDate, requestSent, imageUrl }) => (
         <Box as="tr" key={id}>
           <Td fontWeight="medium">
             <NextLink href="/job/[jobId]" as={`/job/${id}`}>
@@ -24,8 +25,8 @@ const JobsTable = ({ jobs }) => (
             </NextLink>
           </Td>
           <Td>{company}</Td>
-          <Td>{email}</Td>
           <Td>{postedDate}</Td>
+          <Td>{requestSent && <CheckIcon color="green.500" w={5} h={5} />}</Td>
           <Td>
             <RemoveJobDialog id={id} imageUrl={imageUrl} />
           </Td>

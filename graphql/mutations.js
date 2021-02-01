@@ -3,25 +3,27 @@ import { gql } from '@apollo/client';
 // Jobs
 export const CREATE_JOB_MUTATION = gql`
   mutation createJob(
-    $company: String
-    $email: String
-    $postedDate: date
-    $title: String!
-    $description: String
-    $categoriesIds: _text
     $authorId: String
+    $categoriesIds: _text
+    $company: String
+    $description: String
+    $email: String
     $imageUrl: String
+    $postedDate: date
+    $requestSent: Boolean
+    $title: String!
   ) {
     insert_jobs(
       objects: {
-        company: $company
-        email: $email
-        postedDate: $postedDate
-        title: $title
-        description: $description
-        categoriesIds: $categoriesIds
         authorId: $authorId
+        categoriesIds: $categoriesIds
+        company: $company
+        description: $description
+        email: $email
         imageUrl: $imageUrl
+        postedDate: $postedDate
+        requestSent: $requestSent
+        title: $title
       }
     ) {
       returning {
@@ -47,6 +49,7 @@ export const UPDATE_JOB_BY_ID_MUTATION = gql`
     $description: String
     $email: String
     $postedDate: date
+    $requestSent: Boolean
     $title: String
   ) {
     update_jobs(
@@ -57,6 +60,7 @@ export const UPDATE_JOB_BY_ID_MUTATION = gql`
         description: $description
         email: $email
         postedDate: $postedDate
+        requestSent: $requestSent
         title: $title
       }
     ) {
@@ -68,8 +72,20 @@ export const UPDATE_JOB_BY_ID_MUTATION = gql`
         id
         imageUrl
         postedDate
+        requestSent
         title
       }
+    }
+  }
+`;
+
+export const UPDATE_JOB_REQUEST_SENT_BY_ID_MUTATION = gql`
+  mutation updateJobRequestSentValue($id: uuid!, $requestSent: Boolean) {
+    update_jobs_by_pk(
+      pk_columns: { id: $id }
+      _set: { requestSent: $requestSent }
+    ) {
+      id
     }
   }
 `;

@@ -16,10 +16,10 @@ export const GET_JOBS_BY_AUTHOR_QUERY = gql`
       order_by: { postedDate: desc }
     ) {
       company
-      email
       id
       imageUrl
       postedDate
+      requestSent
       title
     }
   }
@@ -35,6 +35,7 @@ export const GET_JOB_BY_ID_QUERY = gql`
       id
       imageUrl
       postedDate
+      requestSent
       title
     }
   }
