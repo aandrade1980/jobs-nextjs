@@ -21,6 +21,7 @@ export default function Header({ active }) {
           top: 0;
           z-index: 1;
           backdrop-filter: blur(10px);
+          box-shadow: 0 5px 10px -10px #000;
         }
       `}</style>
       <Flex
