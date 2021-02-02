@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "yarn jest --watch"
+    "test": "yarn jest",
+    "test:watch": "yarn jest --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test"
+    }
   },
   "dependencies": {
     "@apollo/client": "^3.3.7",
@@ -38,6 +44,7 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "babel-jest": "^26.6.3",
+    "husky": "^4.3.8",
     "jest": "^26.6.3"
   }
 }
