@@ -7,21 +7,23 @@ import {
   Heading,
   Input,
   List,
-  Spinner,
   useToast
 } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
-import Header from '@/components/Header';
 import DeleteCategory from '@/components/DeleteCategory';
+import Header from '@/components/Header';
+import Page from '@/components/Page';
+import Spinner from '@/components/Spinner';
 
+import { AddIcon } from '@chakra-ui/icons';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
-import { useAuth } from '@/lib/auth';
-import Page from '@/components/Page';
 import { useCategoriesByAuthor } from '@/graphql/hooks';
+import { useAuth } from '@/lib/auth';
+import { MotionBox } from '@/util/chakra-motion';
 
 const Categories = () => {
   const { user } = useAuth();
@@ -30,7 +32,6 @@ const Categories = () => {
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
   );
-
   const { register, handleSubmit, errors } = useForm();
   const toast = useToast();
 
@@ -38,14 +39,8 @@ const Categories = () => {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header active="categories" />
-        <Flex px={8} pt={4} justifyContent="center">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
+        <Flex px={8} pt={8} justifyContent="center">
+          <Spinner />
         </Flex>
       </Box>
     );
@@ -109,6 +104,19 @@ const Categories = () => {
       category => category.name.toLowerCase() !== categoryName.toLowerCase()
     );
 
+  const errorMessage = message => (
+    <Heading
+      as="span"
+      size="xs"
+      role="alert"
+      color="red.500"
+      fontWeight="700"
+      ml={1}
+    >
+      {message}
+    </Heading>
+  );
+
   return (
     <Box h="100vh" backgroundColor="gray.100">
       <Header active="categories" />
@@ -118,7 +126,7 @@ const Categories = () => {
           onSubmit={handleSubmit(onSubmit)}
           ml={8}
           mb={4}
-          maxW="500px"
+          maxW="550px"
         >
           <FormControl>
             <Input
@@ -133,48 +141,42 @@ const Categories = () => {
               errorBorderColor="red.500"
               focusBorderColor={errors.name ? 'red.500' : 'blue.500'}
             />
-            {/* use role="alert" to announce the error message */}
-            {errors.name?.type === 'required' && (
-              <Heading
-                as="span"
-                size="xs"
-                role="alert"
-                color="red.500"
-                fontWeight="700"
-                ml={1}
-              >
-                This is required
-              </Heading>
-            )}
-            {errors.name?.type === 'validate' && (
-              <Heading
-                as="span"
-                size="xs"
-                role="alert"
-                color="red.500"
-                fontWeight="700"
-                ml={1}
-              >
-                Category already exists
-              </Heading>
-            )}
+            {errors.name?.type === 'required' &&
+              errorMessage('This is required')}
+            {errors.name?.type === 'validate' &&
+              errorMessage('Category already exists')}
           </FormControl>
+
           <Button
             backgroundColor="gray.900"
             color="white"
             fontWeight="medium"
-            _hover={{ bg: 'gray.700' }}
-            _active={{ transform: 'scale(0.95)', bg: 'gray.800' }}
             type="submit"
             pl={8}
             pr={8}
             ml={3}
             isLoading={creatingCategory}
+            leftIcon={<AddIcon w={3} h={3} />}
+            _hover={{ bg: 'gray.700' }}
+            _active={{ transform: 'scale(0.95)', bg: 'gray.700' }}
           >
-            + Add Category
+            Add Category
           </Button>
         </Flex>
-        <Box px={9}>
+        <MotionBox
+          ml={8}
+          mt={2}
+          px={9}
+          pb={2}
+          border="Solid 1px"
+          borderColor="gray.300"
+          width="fit-content"
+          backgroundColor="gray.50"
+          borderRadius="5px"
+          initial={{ x: '-100vw' }}
+          animate={{ x: 0 }}
+          transition={{ type: 'spring' }}
+        >
           <List
             spacing={3}
             display="grid"
@@ -187,7 +189,7 @@ const Categories = () => {
               <DeleteCategory key={id} name={name} id={id} />
             ))}
           </List>
-        </Box>
+        </MotionBox>
       </Flex>
     </Box>
   );

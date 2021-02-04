@@ -1,12 +1,13 @@
 import Head from 'next/head';
-import { Box, Button, Heading } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 
 import { GoogleIcon } from '@/components/Icons';
+import { MotionBox, MotionButton } from '@/util/chakra-motion';
 import { useAuth } from '@/lib/auth';
 import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
-  const auth = useAuth();
+  const { signinWithGoogle } = useAuth();
 
   return (
     <div>
@@ -24,7 +25,7 @@ export default function Home() {
         />
       </Head>
 
-      <Box
+      <MotionBox
         as="main"
         direction="column"
         align="center"
@@ -32,9 +33,14 @@ export default function Home() {
         bg="gray.100"
         py={24}
         mb={12}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5 }}
       >
-        <Heading>Welcome to Post Jobs</Heading>
-        <Button
+        <motion.h2 animate={{ fontSize: '2.5rem', fontWeight: 500 }}>
+          Welcome to Post Jobs
+        </motion.h2>
+        <MotionButton
           mt={8}
           leftIcon={<GoogleIcon />}
           backgroundColor="white"
@@ -42,12 +48,14 @@ export default function Home() {
           fontWeight="medium"
           _hover={{ bg: 'gray.200' }}
           _active={{ transform: 'scale(0.95)', bg: 'gray.100' }}
-          onClick={() => auth.signinWithGoogle()}
+          onClick={() => signinWithGoogle()}
         >
           Continue with Google
-        </Button>
-      </Box>
-      <NowPlaying />
+        </MotionButton>
+      </MotionBox>
+      <motion.div layoutId="now-playing">
+        <NowPlaying />
+      </motion.div>
     </div>
   );
 }
