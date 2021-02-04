@@ -67,11 +67,14 @@ export async function getServerSideProps(context) {
       props: { userId: uid }
     };
   } catch (error) {
-    context.res.writeHead(302, { Location: '/' });
-    context.res.end();
-    nookies.destroy(context, 'token');
     console.error(error);
+    nookies.destroy(context, 'token');
 
-    return { props: {} };
+    return {
+      redirect: {
+        destination: '/',
+        statusCode: 302
+      }
+    };
   }
 }

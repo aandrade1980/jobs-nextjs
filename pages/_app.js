@@ -2,6 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider, CSSReset } from '@chakra-ui/react';
 import { Global, css } from '@emotion/react';
 import { DefaultSeo } from 'next-seo';
+import { AnimateSharedLayout } from 'framer-motion';
 
 import theme from '@/styles/theme';
 import { useApollo } from '@/lib/apolloClient';
@@ -42,9 +43,11 @@ function MyApp({ Component, pageProps, err }) {
       <ApolloProvider client={apolloClient}>
         <ProvideSearch>
           <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <DefaultSeo {...SEO} />
-            <Component {...pageProps} err={err} />
+            <AnimateSharedLayout>
+              <GlobalStyle />
+              <DefaultSeo {...SEO} />
+              <Component {...pageProps} err={err} />
+            </AnimateSharedLayout>
           </ThemeProvider>
         </ProvideSearch>
       </ApolloProvider>
