@@ -85,7 +85,7 @@ export default function Header({ active }) {
           </NextLink>
         </Flex>
         <Flex justifyContent="center" alignItems="center">
-          <motion.div layoutId="now-playing">
+          <motion.div layoutId="now-playing" drag>
             <NowPlaying />
           </motion.div>
           <Link mx={5} fontSize="sm" color="gray.600" onClick={() => signout()}>
