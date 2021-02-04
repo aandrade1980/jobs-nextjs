@@ -1,12 +1,13 @@
 import { Avatar, Flex, Link, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
+import { motion } from 'framer-motion';
 
 import { useAuth } from '@/lib/auth';
 import NowPlaying from './NowPlaying';
 
 export default function Header({ active }) {
-  const auth = useAuth();
+  const { user, signout } = useAuth();
 
   return (
     <div>
@@ -34,7 +35,7 @@ export default function Header({ active }) {
         h="60px"
       >
         <Flex align="center" h="100%">
-          <NextLink href="/" passHref>
+          <NextLink href="/jobs" passHref>
             <Link
               display="flex"
               alignContent="center"
@@ -84,16 +85,13 @@ export default function Header({ active }) {
           </NextLink>
         </Flex>
         <Flex justifyContent="center" alignItems="center">
-          <NowPlaying />
-          <Link
-            mx={5}
-            fontSize="sm"
-            color="gray.600"
-            onClick={() => auth.signout()}
-          >
+          <motion.div layoutId="now-playing">
+            <NowPlaying />
+          </motion.div>
+          <Link mx={5} fontSize="sm" color="gray.600" onClick={() => signout()}>
             Log Out
           </Link>
-          <Avatar size="sm" src={auth.user?.photoURL} />
+          <Avatar size="sm" src={user?.photoURL} />
         </Flex>
       </Flex>
     </div>

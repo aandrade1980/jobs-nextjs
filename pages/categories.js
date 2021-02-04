@@ -1,27 +1,29 @@
 import { useMutation } from '@apollo/client';
 import {
   Box,
+  Button,
   Flex,
   FormControl,
   Heading,
   Input,
   List,
-  Spinner,
   useToast
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
-import Header from '@/components/Header';
 import DeleteCategory from '@/components/DeleteCategory';
+import Header from '@/components/Header';
+import Page from '@/components/Page';
+import Spinner from '@/components/Spinner';
 
+import { AddIcon } from '@chakra-ui/icons';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
-import { useAuth } from '@/lib/auth';
-import Page from '@/components/Page';
 import { useCategoriesByAuthor } from '@/graphql/hooks';
-import { MotionBox, MotionButton } from '@/util/chakra-motion';
+import { useAuth } from '@/lib/auth';
+import { MotionBox } from '@/util/chakra-motion';
 
 const Categories = () => {
   const { user } = useAuth();
@@ -30,7 +32,6 @@ const Categories = () => {
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
   );
-  const [showAddButton, setShowAddButton] = useState(false);
   const { register, handleSubmit, errors } = useForm();
   const toast = useToast();
 
@@ -38,14 +39,8 @@ const Categories = () => {
     return (
       <Box h="100vh" backgroundColor="gray.100">
         <Header active="categories" />
-        <Flex px={8} pt={4} justifyContent="center">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
+        <Flex px={8} pt={8} justifyContent="center">
+          <Spinner />
         </Flex>
       </Box>
     );
@@ -109,8 +104,6 @@ const Categories = () => {
       category => category.name.toLowerCase() !== categoryName.toLowerCase()
     );
 
-  const onFocus = () => setShowAddButton(true);
-
   const errorMessage = message => (
     <Heading
       as="span"
@@ -133,7 +126,7 @@ const Categories = () => {
           onSubmit={handleSubmit(onSubmit)}
           ml={8}
           mb={4}
-          maxW="500px"
+          maxW="550px"
         >
           <FormControl>
             <Input
@@ -147,37 +140,28 @@ const Categories = () => {
               isInvalid={errors.name}
               errorBorderColor="red.500"
               focusBorderColor={errors.name ? 'red.500' : 'blue.500'}
-              onFocus={onFocus}
-              width="350px"
             />
             {errors.name?.type === 'required' &&
               errorMessage('This is required')}
             {errors.name?.type === 'validate' &&
               errorMessage('Category already exists')}
           </FormControl>
-          {showAddButton && (
-            <MotionButton
-              backgroundColor="gray.900"
-              color="white"
-              fontWeight="medium"
-              _hover={{ bg: 'gray.700' }}
-              _active={{ transform: 'scale(0.95)', bg: 'gray.800' }}
-              type="submit"
-              pl={8}
-              pr={8}
-              ml={3}
-              isLoading={creatingCategory}
-              initial={{ x: '100vw' }}
-              animate={{ x: 0 }}
-              transition={{ type: 'spring', stiffness: 120 }}
-              whileHover={{
-                textShadow: '0 0 8px rgb(255, 255, 255)',
-                boxShadow: '0 0 8px rgb(255, 255, 255)'
-              }}
-            >
-              + Add Category
-            </MotionButton>
-          )}
+
+          <Button
+            backgroundColor="gray.900"
+            color="white"
+            fontWeight="medium"
+            type="submit"
+            pl={8}
+            pr={8}
+            ml={3}
+            isLoading={creatingCategory}
+            leftIcon={<AddIcon w={3} h={3} />}
+            _hover={{ bg: 'gray.700' }}
+            _active={{ transform: 'scale(0.95)', bg: 'gray.700' }}
+          >
+            Add Category
+          </Button>
         </Flex>
         <MotionBox
           ml={8}

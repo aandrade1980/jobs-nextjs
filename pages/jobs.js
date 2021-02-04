@@ -67,10 +67,10 @@ export async function getServerSideProps(context) {
       props: { userId: uid }
     };
   } catch (error) {
-    console.error(error);
-    nookies.destroy(context, 'token');
     context.res.writeHead(302, { Location: '/' });
     context.res.end();
+    nookies.destroy(context, 'token');
+    console.error(error);
 
     return { props: {} };
   }
