@@ -37,7 +37,7 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.5 }}
       >
-        <motion.h2 animate={{ fontSize: '2.5rem', fontWeight: 500 }}>
+        <motion.h2 animate={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
           Welcome to Post Jobs
         </motion.h2>
         <MotionButton
