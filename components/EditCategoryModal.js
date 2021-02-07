@@ -136,7 +136,7 @@ export default function EditCategoryModal({ categoryId, categoryName }) {
                   colorScheme="blue"
                   ml={3}
                   type="submit"
-                  disabled={isSubmitting}
+                  isLoading={isSubmitting}
                 >
                   Update
                 </Button>
