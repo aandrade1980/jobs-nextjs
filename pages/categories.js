@@ -4,26 +4,25 @@ import {
   Button,
   Flex,
   FormControl,
-  Heading,
   Input,
-  List,
+  Spinner,
   useToast
 } from '@chakra-ui/react';
-import React from 'react';
+import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
-import DeleteCategory from '@/components/DeleteCategory';
+import CategoriesTable from '@/components/CategoriesTable';
+import ErrorMessage from '@/components/ErrorMessage';
 import Header from '@/components/Header';
 import Page from '@/components/Page';
-import Spinner from '@/components/Spinner';
 
-import { AddIcon } from '@chakra-ui/icons';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useCategoriesByAuthor } from '@/graphql/hooks';
 import { useAuth } from '@/lib/auth';
 import { MotionBox } from '@/util/chakra-motion';
+import { sortCategories } from '@/util/helpers';
 
 const Categories = () => {
   const { user } = useAuth();
@@ -40,7 +39,13 @@ const Categories = () => {
       <Box h="100vh" backgroundColor="gray.100">
         <Header active="categories" />
         <Flex px={8} pt={8} justifyContent="center">
-          <Spinner />
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
         </Flex>
       </Box>
     );
@@ -72,12 +77,10 @@ const Categories = () => {
         newCategory.name = name;
         newCategory.authorId = authorId;
 
-        const sortedCategories = [
+        const sortedCategories = sortCategories([
           newCategory,
           ...cacheData.categories
-        ].sort((a, b) =>
-          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
-        );
+        ]);
 
         cache.writeQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
@@ -104,21 +107,8 @@ const Categories = () => {
       category => category.name.toLowerCase() !== categoryName.toLowerCase()
     );
 
-  const errorMessage = message => (
-    <Heading
-      as="span"
-      size="xs"
-      role="alert"
-      color="red.500"
-      fontWeight="700"
-      ml={1}
-    >
-      {message}
-    </Heading>
-  );
-
   return (
-    <Box h="100vh" backgroundColor="gray.100">
+    <Box minH="100vh" backgroundColor="gray.100">
       <Header active="categories" />
       <Flex maxW="1250px" margin="0 auto" flexDirection="column">
         <Flex
@@ -136,15 +126,18 @@ const Categories = () => {
                 required: true,
                 validate: alreadyExists
               })}
+              borderColor="gray.400"
               backgroundColor="white"
               isInvalid={errors.name}
               errorBorderColor="red.500"
               focusBorderColor={errors.name ? 'red.500' : 'blue.500'}
             />
-            {errors.name?.type === 'required' &&
-              errorMessage('This is required')}
-            {errors.name?.type === 'validate' &&
-              errorMessage('Category already exists')}
+            {errors.name?.type === 'required' && (
+              <ErrorMessage message="This is required" />
+            )}
+            {errors.name?.type === 'validate' && (
+              <ErrorMessage message="Category already exists" />
+            )}
           </FormControl>
 
           <Button
@@ -165,9 +158,8 @@ const Categories = () => {
         </Flex>
         <MotionBox
           ml={8}
-          mt={2}
+          my={2}
           px={9}
-          pb={2}
           border="Solid 1px"
           borderColor="gray.300"
           width="fit-content"
@@ -177,18 +169,7 @@ const Categories = () => {
           animate={{ x: 0 }}
           transition={{ type: 'spring' }}
         >
-          <List
-            spacing={3}
-            display="grid"
-            gridTemplateColumns="auto auto"
-            gridColumnGap="50px"
-            alignItems="end"
-            width="fit-content"
-          >
-            {categories.map(({ name, id }) => (
-              <DeleteCategory key={id} name={name} id={id} />
-            ))}
-          </List>
+          <CategoriesTable categories={categories} />
         </MotionBox>
       </Flex>
     </Box>

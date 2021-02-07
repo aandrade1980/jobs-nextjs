@@ -106,3 +106,14 @@ export const DELETE_CATEGORY_BY_ID_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_CATEGORY_MUTATION = gql`
+  mutation updateCategory($id: uuid!, $name: String) {
+    update_categories_by_pk(pk_columns: { id: $id }, _set: { name: $name }) {
+      authorId
+      createdAt
+      id
+      name
+    }
+  }
+`;
