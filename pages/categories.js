@@ -110,7 +110,18 @@ const Categories = () => {
   return (
     <Box minH="100vh" backgroundColor="gray.100">
       <Header active="categories" />
-      <Flex maxW="1250px" margin="0 auto" flexDirection="column">
+      <Flex maxW="1250px" margin="0 auto">
+        <MotionBox
+          ml={8}
+          mb={2}
+          px={9}
+          width="fit-content"
+          initial={{ x: '-100vw' }}
+          animate={{ x: 0 }}
+          transition={{ type: 'spring' }}
+        >
+          <CategoriesTable categories={categories} />
+        </MotionBox>
         <Flex
           as="form"
           onSubmit={handleSubmit(onSubmit)}
@@ -139,7 +150,6 @@ const Categories = () => {
               <ErrorMessage message="Category already exists" />
             )}
           </FormControl>
-
           <Button
             backgroundColor="gray.900"
             color="white"
@@ -156,21 +166,6 @@ const Categories = () => {
             Add Category
           </Button>
         </Flex>
-        <MotionBox
-          ml={8}
-          my={2}
-          px={9}
-          border="Solid 1px"
-          borderColor="gray.300"
-          width="fit-content"
-          backgroundColor="gray.50"
-          borderRadius="5px"
-          initial={{ x: '-100vw' }}
-          animate={{ x: 0 }}
-          transition={{ type: 'spring' }}
-        >
-          <CategoriesTable categories={categories} />
-        </MotionBox>
       </Flex>
     </Box>
   );
