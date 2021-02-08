@@ -1,17 +1,28 @@
 import { DeleteIcon, TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import {
+  Box,
+  Button,
   chakra,
+  Flex,
+  Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Select,
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tooltip,
   Tr,
   useToast
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import { Fragment, useMemo, useState } from 'react';
+import { useTable, useSortBy, useFilters, usePagination } from 'react-table';
 
 import { DELETE_CATEGORY_BY_ID_MUTATION } from '@/graphql/mutations';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
@@ -55,6 +66,14 @@ export default function CategoriesTable({ categories = [] }) {
   const [deleteCategory] = useMutation(DELETE_CATEGORY_BY_ID_MUTATION);
   const toast = useToast();
 
+  const [filterInput, setFilterInput] = useState('');
+
+  const handleFilterChange = e => {
+    const value = e.target.value || '';
+    setFilter('col1', value);
+    setFilterInput(value);
+  };
+
   const onDeleteCategory = async (id, name) => {
     await deleteCategory({
       variables: { id },
@@ -89,58 +108,158 @@ export default function CategoriesTable({ categories = [] }) {
     });
   };
 
+  const onChangeInSelect = event => setPageSize(Number(event.target.value));
+
+  const onChangeInInput = page => gotoPage(page - 1);
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data }, useSortBy);
+    page,
+    prepareRow,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+    setFilter
+  } = useTable(
+    { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
+    useFilters,
+    useSortBy,
+    usePagination
+  );
 
   return (
     <>
-      <Table {...getTableProps()} variant="striped" colorScheme="gray" mb={2}>
-        <Thead>
-          {headerGroups.map(headerGroup => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <Th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  style={{
-                    borderBottom: 'solid 1px #E2E8F0',
-                    background: '#F7FAFC',
-                    color: 'black',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {column.render('Header')}
-                  <chakra.span pl="4">
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <TriangleDownIcon aria-label="sorted descending" />
-                      ) : (
-                        <TriangleUpIcon aria-label="sorted ascending" />
-                      )
-                    ) : null}
-                  </chakra.span>
-                </Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <Tr {...row.getRowProps()}>
-                {row.cells.map(cell => (
-                  <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+      <Input
+        type="text"
+        value={filterInput}
+        onChange={handleFilterChange}
+        placeholder="Search Categories"
+        size="sm"
+        borderColor="gray.400"
+        backgroundColor="gray.50"
+        mb={2}
+      />
+      <Box border="solid 1px" borderColor="gray.300">
+        <Table
+          {...getTableProps()}
+          variant="striped"
+          colorScheme="gray"
+          backgroundColor="gray.50"
+          borderRadius="5px"
+          minW="450px"
+        >
+          <Thead>
+            {headerGroups.map(headerGroup => (
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => (
+                  <Fragment key={index}>
+                    <Th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      style={{
+                        borderBottom: 'solid 1px #E2E8F0',
+                        background: '#F7FAFC',
+                        color: 'black',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {column.render('Header')}
+                      <chakra.span pl="4">
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <TriangleDownIcon aria-label="sorted descending" />
+                          ) : (
+                            <TriangleUpIcon aria-label="sorted ascending" />
+                          )
+                        ) : null}
+                      </chakra.span>
+                    </Th>
+                  </Fragment>
                 ))}
               </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+            ))}
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {page.map(row => {
+              prepareRow(row);
+              return (
+                <Tr {...row.getRowProps()}>
+                  {row.cells.map((cell, index) => (
+                    <Td key={index} {...cell.getCellProps()}>
+                      {cell.render('Cell')}
+                    </Td>
+                  ))}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Box>
+      {!filterInput && (
+        <Flex justifyContent="space-between" alignItems="center" mt={2}>
+          <Button
+            size="sm"
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+          >
+            {'<<'}
+          </Button>
+          <Button size="sm" onClick={previousPage} disabled={!canPreviousPage}>
+            {'<'}
+          </Button>
+          <Text fontSize="sm">
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>
+          </Text>
+          <NumberInput
+            size="sm"
+            maxW={20}
+            defaultValue={pageIndex + 1}
+            min={1}
+            max={pageOptions.length}
+            onChange={valueString => onChangeInInput(valueString)}
+            borderColor="gray.400"
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <Select
+            size="sm"
+            value={pageSize}
+            onChange={onChangeInSelect}
+            maxW="105px"
+            borderColor="gray.400"
+          >
+            {[10, 20, 30, 40, 50].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </Select>
+          <Button size="sm" onClick={nextPage} disabled={!canNextPage}>
+            {'>'}
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+          >
+            {'>>'}
+          </Button>
+        </Flex>
+      )}
     </>
   );
 }
