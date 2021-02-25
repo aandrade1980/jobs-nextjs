@@ -21,7 +21,7 @@ import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useCategoriesByAuthor } from '@/graphql/hooks';
 import { useAuth } from '@/lib/auth';
-import { MotionBox } from '@/util/chakra-motion';
+import { MotionBox, MotionFlex } from '@/util/chakra-motion';
 import { sortCategories } from '@/util/helpers';
 
 const Categories = () => {
@@ -122,12 +122,15 @@ const Categories = () => {
         >
           <CategoriesTable categories={categories} />
         </MotionBox>
-        <Flex
+        <MotionFlex
           as="form"
           onSubmit={handleSubmit(onSubmit)}
           ml={8}
           mb={4}
           maxW="550px"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
         >
           <FormControl>
             <Input
@@ -165,7 +168,7 @@ const Categories = () => {
           >
             Add Category
           </Button>
-        </Flex>
+        </MotionFlex>
       </Flex>
     </Box>
   );

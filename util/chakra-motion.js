@@ -1,5 +1,5 @@
 import { motion, isValidMotionProp } from 'framer-motion';
-import { Box, Button, forwardRef, ListItem } from '@chakra-ui/react';
+import { Box, Button, Flex, forwardRef, ListItem } from '@chakra-ui/react';
 
 export const MotionBox = motion.custom(
   forwardRef((props, ref) => {
@@ -26,5 +26,14 @@ export const MotionListItem = motion.custom(
       Object.entries(props).filter(([key]) => !isValidMotionProp(key))
     );
     return <ListItem ref={ref} {...chakraProps} />;
+  })
+);
+
+export const MotionFlex = motion.custom(
+  forwardRef((props, ref) => {
+    const chakraProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => !isValidMotionProp(key))
+    );
+    return <Flex ref={ref} {...chakraProps} />;
   })
 );
