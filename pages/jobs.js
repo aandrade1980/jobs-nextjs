@@ -33,9 +33,9 @@ const Jobs = ({ userId }) => {
     );
   }
 
-  const { jobs: allJobs } = data;
+  const { jobs: userJobs } = data;
 
-  const filteredJobs = allJobs.filter(
+  const filteredJobs = userJobs.filter(
     job =>
       job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.company.toLowerCase().includes(search.toLowerCase())

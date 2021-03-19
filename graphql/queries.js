@@ -1,14 +1,6 @@
 import { gql } from '@apollo/client';
 
 // #Jobs
-export const ALL_JOBS_QUERY = gql`
-  query allJobs {
-    jobs {
-      id
-    }
-  }
-`;
-
 export const GET_JOBS_BY_AUTHOR_QUERY = gql`
   query getJobs($authorId: String!) {
     jobs(
