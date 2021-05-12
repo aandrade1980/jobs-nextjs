@@ -6,7 +6,7 @@ import {
   FormControl,
   Input,
   Spinner,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
@@ -51,7 +51,7 @@ const Categories = () => {
     );
   }
 
-  if (error) console.error(`Error getting cateogires ${error}`);
+  if (error) console.error(`Error getting categories ${error}`);
 
   const { categories } = data;
 
@@ -63,13 +63,13 @@ const Categories = () => {
           name,
           authorId,
           id: uuidv4(),
-          __typename: 'Categories'
-        }
+          __typename: 'Categories',
+        },
       },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId }
+          variables: { authorId },
         });
 
         const newCategory = data['insert_categories_one'];
@@ -79,17 +79,17 @@ const Categories = () => {
 
         const sortedCategories = sortCategories([
           newCategory,
-          ...cacheData.categories
+          ...cacheData.categories,
         ]);
 
         cache.writeQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
           variables: { authorId },
           data: {
-            categories: sortedCategories
-          }
+            categories: sortedCategories,
+          },
         });
-      }
+      },
     });
     toast({
       title: 'Category created.',
@@ -97,7 +97,7 @@ const Categories = () => {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top'
+      position: 'top',
     });
     e.target.reset();
   };
@@ -135,7 +135,7 @@ const Categories = () => {
               placeholder="Javascript"
               ref={register({
                 required: true,
-                validate: alreadyExists
+                validate: alreadyExists,
               })}
               borderColor="gray.400"
               backgroundColor="white"
