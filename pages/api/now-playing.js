@@ -1,6 +1,6 @@
 import { getNowPlaying } from '@/lib/spotify';
 
-export default async (_, res) => {
+const getPlayingSong = async (_, res) => {
   const response = await getNowPlaying();
 
   if (response.status === 204 || response.status > 400) {
@@ -11,7 +11,7 @@ export default async (_, res) => {
 
   if (!song.item && song.currently_playing_type === 'ad') {
     return res.status(200).json({
-      title: 'Playing Ads'
+      title: 'Playing Ads',
     });
   }
 
@@ -33,6 +33,8 @@ export default async (_, res) => {
     artist,
     isPlaying,
     songUrl,
-    title
+    title,
   });
 };
+
+export default getPlayingSong;

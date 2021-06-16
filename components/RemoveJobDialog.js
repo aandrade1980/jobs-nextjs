@@ -8,7 +8,7 @@ import {
   AlertDialogOverlay,
   Button,
   IconButton,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useRef, useState } from 'react';
@@ -32,7 +32,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
 
       const params = {
         Bucket: 'nextjs-job-post',
-        Key: `${folder}/${fileName}`
+        Key: `${folder}/${fileName}`,
       };
 
       s3.deleteObject(params, err => {
@@ -47,7 +47,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_JOBS_BY_AUTHOR_QUERY,
-          variables: { authorId: user.uid }
+          variables: { authorId: user.uid },
         });
 
         const updatedJobs = cacheData.jobs.filter(job => job.id !== id);
@@ -56,10 +56,10 @@ export default function RemoveJobDialog({ id, imageUrl }) {
           query: GET_JOBS_BY_AUTHOR_QUERY,
           variables: { authorId: user.uid },
           data: {
-            jobs: [...updatedJobs]
-          }
+            jobs: [...updatedJobs],
+          },
         });
-      }
+      },
     });
 
     toast({
@@ -68,7 +68,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top'
+      position: 'top',
     });
   };
 
@@ -93,7 +93,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              {`Are you sure? You can't undo this action afterwards.`}
             </AlertDialogBody>
 
             <AlertDialogFooter>

@@ -11,7 +11,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test"
+      "pre-commit": "yarn test && npx next lint "
     }
   },
   "dependencies": {
@@ -32,7 +32,7 @@
     "formik": "^2.2.6",
     "framer-motion": "^3.2.2-rc.1",
     "graphql": "^15.4.0",
-    "next": "^10.2.0",
+    "next": "^11.0.0",
     "next-seo": "^4.18.0",
     "nookies": "^2.5.2",
     "react": "17.0.1",
@@ -46,6 +46,8 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "babel-jest": "^26.6.3",
+    "eslint": "^7.28.0",
+    "eslint-config-next": "^11.0.0",
     "husky": "^4.3.8",
     "jest": "^26.6.3"
   }

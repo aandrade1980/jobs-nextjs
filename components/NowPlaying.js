@@ -49,6 +49,7 @@ export default function NowPlaying({ showArtist = true }) {
               loading="lazy"
               width={32}
               height={32}
+              alt=""
             />
             <style jsx global>{`
               .borderRadius-50 {
