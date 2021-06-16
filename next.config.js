@@ -85,7 +85,4 @@ module.exports = {
     return config;
   },
   basePath,
-  future: {
-    webpack5: true,
-  },
 };
