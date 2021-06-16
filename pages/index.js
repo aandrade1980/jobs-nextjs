@@ -1,35 +1,61 @@
 import Head from 'next/head';
-import { useQuery } from '@apollo/client';
+import { motion } from 'framer-motion';
 
-import { ALL_JOBS_QUERY } from 'graphql/queries';
-
-import styles from '../styles/Home.module.css';
+import { GoogleIcon } from '@/components/Icons';
+import { MotionBox, MotionButton } from '@/util/chakra-motion';
+import { useAuth } from '@/lib/auth';
+import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
-  const { loading, error, data } = useQuery(ALL_JOBS_QUERY);
+  const { signinWithGoogle } = useAuth();
 
-  if (error) {
-    return <div>Error loading jobs</div>;
-  }
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  const { jobs: allJobs } = data;
-
-  console.log('ALL JOBS => ', allJobs);
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Post Jobs</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('token')) {
+            window.location.href = "/jobs"
+          }
+        `
+          }}
+        />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <code>Jobs Post</code>
-        </h1>
-      </main>
+      <MotionBox
+        as="main"
+        direction="column"
+        align="center"
+        justify="center"
+        bg="gray.100"
+        py={24}
+        mb={12}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5 }}
+      >
+        <motion.h2 animate={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
+          Welcome to Post Jobs
+        </motion.h2>
+        <MotionButton
+          mt={8}
+          leftIcon={<GoogleIcon />}
+          backgroundColor="white"
+          color="black"
+          fontWeight="medium"
+          _hover={{ bg: 'gray.200' }}
+          _active={{ transform: 'scale(0.95)', bg: 'gray.100' }}
+          onClick={() => signinWithGoogle()}
+        >
+          Continue with Google
+        </MotionButton>
+      </MotionBox>
+      <motion.div layoutId="now-playing">
+        <NowPlaying />
+      </motion.div>
     </div>
   );
 }

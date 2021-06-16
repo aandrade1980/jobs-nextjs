@@ -1,14 +1,57 @@
 import { ApolloProvider } from '@apollo/client';
-import { useApollo } from '../lib/apolloClient';
+import { ThemeProvider, CSSReset } from '@chakra-ui/react';
+import { Global, css } from '@emotion/react';
+import { DefaultSeo } from 'next-seo';
+import { AnimateSharedLayout } from 'framer-motion';
 
-import '../styles/globals.css';
+import theme from '@/styles/theme';
+import { useApollo } from '@/lib/apolloClient';
+import { AuthProvider } from '@/lib/auth';
+import { ProvideSearch } from '@/util/search';
 
-function MyApp({ Component, pageProps }) {
-  const apolloClient = useApollo(pageProps.initialApolloState);
+import { init } from '@/util/sentry';
+
+import SEO from '../next-seo.config';
+
+init();
+
+const GlobalStyle = ({ children }) => (
+  <>
+    <CSSReset />
+    <Global
+      styles={css`
+        html {
+          min-width: 360px;
+          scroll-behavior: smooth;
+        }
+        #__next {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+        }
+      `}
+    />
+    {children}
+  </>
+);
+
+function MyApp({ Component, pageProps, err }) {
+  const apolloClient = useApollo(pageProps);
+
   return (
-    <ApolloProvider client={apolloClient}>
-      <Component {...pageProps} />
-    </ApolloProvider>
+    <AuthProvider>
+      <ApolloProvider client={apolloClient}>
+        <ProvideSearch>
+          <ThemeProvider theme={theme}>
+            <AnimateSharedLayout>
+              <GlobalStyle />
+              <DefaultSeo {...SEO} />
+              <Component {...pageProps} err={err} />
+            </AnimateSharedLayout>
+          </ThemeProvider>
+        </ProvideSearch>
+      </ApolloProvider>
+    </AuthProvider>
   );
 }
 

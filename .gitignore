@@ -32,3 +32,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Firebase Admin
+react-job-post-functions-firebase-adminsdk-y42a3-81627090b0.json
+
+# Test
+.coverage
