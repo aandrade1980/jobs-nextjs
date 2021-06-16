@@ -4,7 +4,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  InputRightElement
+  InputRightElement,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
 
@@ -24,10 +24,9 @@ export const JobsTableHeader = () => {
   return (
     <Flex justifyContent="space-between" mb={4}>
       <InputGroup maxWidth="60%">
-        <InputLeftElement
-          pointerEvents="none"
-          children={<Search2Icon color="gray.400" />}
-        />
+        <InputLeftElement pointerEvents="none">
+          <Search2Icon color="gray.400" />
+        </InputLeftElement>
         <Input
           type="text"
           placeholder="Search Jobs by Title or Company"
@@ -37,11 +36,9 @@ export const JobsTableHeader = () => {
           ref={inputRef}
           borderColor="#CBD5E0"
         />
-        <InputRightElement
-          cursor="pointer"
-          children={search && <CloseIcon color="gray.400" />}
-          onClick={handleClick}
-        />
+        <InputRightElement cursor="pointer" onClick={handleClick}>
+          {search && <CloseIcon color="gray.400" />}
+        </InputRightElement>
       </InputGroup>
       <AddJobModal buttonText="Add Job" title="Add Job" />
     </Flex>

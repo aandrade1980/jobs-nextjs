@@ -19,7 +19,7 @@ import {
   Thead,
   Tooltip,
   Tr,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { Fragment, useMemo, useState } from 'react';
 import { useTable, useSortBy, useFilters, usePagination } from 'react-table';
@@ -33,23 +33,28 @@ import EditCategoryModal from './EditCategoryModal';
 export default function CategoriesTable({ categories = [] }) {
   const { user } = useAuth();
   const authorId = user?.uid;
+
+  const TooltipComponent = ({ id, name }) => {
+    return (
+      <Tooltip label="Delete Category" fontSize="xs">
+        <DeleteIcon
+          color="red.500"
+          ml={6}
+          onClick={() => onDeleteCategory(id, name)}
+          cursor="pointer"
+          _active={{ transform: 'scale(0.95)' }}
+          _hover={{ color: 'red.300' }}
+        />
+      </Tooltip>
+    );
+  };
+
   const data = useMemo(
     () =>
       categories.map(({ id, name }) => ({
         col1: name,
         col2: <EditCategoryModal categoryName={name} categoryId={id} />,
-        col3: (
-          <Tooltip label="Delete Category" fontSize="xs">
-            <DeleteIcon
-              color="red.500"
-              ml={6}
-              onClick={() => onDeleteCategory(id, name)}
-              cursor="pointer"
-              _active={{ transform: 'scale(0.95)' }}
-              _hover={{ color: 'red.300' }}
-            />
-          </Tooltip>
-        )
+        col3: <TooltipComponent id={id} name={name} />,
       })),
     [categories]
   );
@@ -58,7 +63,7 @@ export default function CategoriesTable({ categories = [] }) {
     () => [
       { Header: 'Name', accessor: 'col1' },
       { Header: '', accessor: 'col2' },
-      { Header: '', accessor: 'col3' }
+      { Header: '', accessor: 'col3' },
     ],
     []
   );
@@ -80,7 +85,7 @@ export default function CategoriesTable({ categories = [] }) {
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId }
+          variables: { authorId },
         });
 
         const deletedCat = data['delete_categories_by_pk'];
@@ -93,10 +98,10 @@ export default function CategoriesTable({ categories = [] }) {
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
           variables: { authorId },
           data: {
-            categories: updatedCategories
-          }
+            categories: updatedCategories,
+          },
         });
-      }
+      },
     });
     toast({
       title: 'Category deleted.',
@@ -104,7 +109,7 @@ export default function CategoriesTable({ categories = [] }) {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top'
+      position: 'top',
     });
   };
 
@@ -127,7 +132,7 @@ export default function CategoriesTable({ categories = [] }) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
-    setFilter
+    setFilter,
   } = useTable(
     { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
     useFilters,
@@ -157,8 +162,8 @@ export default function CategoriesTable({ categories = [] }) {
           minW="450px"
         >
           <Thead>
-            {headerGroups.map(headerGroup => (
-              <Tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroups.map((headerGroup, index) => (
+              <Tr key={index} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, index) => (
                   <Fragment key={index}>
                     <Th
@@ -167,7 +172,7 @@ export default function CategoriesTable({ categories = [] }) {
                         borderBottom: 'solid 1px #E2E8F0',
                         background: '#F7FAFC',
                         color: 'black',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
                       }}
                     >
                       {column.render('Header')}
@@ -187,10 +192,10 @@ export default function CategoriesTable({ categories = [] }) {
             ))}
           </Thead>
           <Tbody {...getTableBodyProps()}>
-            {page.map(row => {
+            {page.map((row, index) => {
               prepareRow(row);
               return (
-                <Tr {...row.getRowProps()}>
+                <Tr key={index} {...row.getRowProps()}>
                   {row.cells.map((cell, index) => (
                     <Td key={index} {...cell.getCellProps()}>
                       {cell.render('Cell')}

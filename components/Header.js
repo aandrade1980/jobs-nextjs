@@ -67,7 +67,6 @@ export default function Header({ active }) {
           <NextLink href="/categories" passHref>
             <Link
               display="flex"
-              display="flex"
               flexDirection="column"
               alignItems="center"
               px={2}
