@@ -1,9 +1,11 @@
+import dynamic from 'next/dynamic';
 import { CheckIcon } from '@chakra-ui/icons';
 import { Box, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
-import RemoveJobDialog from './RemoveJobDialog';
 import { Table, Td, Th, Tr } from './Table';
+
+const RemoveJobDialogComponent = dynamic(() => import('./RemoveJobDialog'));
 
 const JobsTable = ({ jobs }) => (
   <Table>
@@ -28,7 +30,7 @@ const JobsTable = ({ jobs }) => (
           <Td>{postedDate}</Td>
           <Td>{requestSent && <CheckIcon color="green.500" w={5} h={5} />}</Td>
           <Td>
-            <RemoveJobDialog id={id} imageUrl={imageUrl} />
+            <RemoveJobDialogComponent id={id} imageUrl={imageUrl} />
           </Td>
         </Box>
       ))}

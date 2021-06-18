@@ -1,19 +1,26 @@
+import dynamic from 'next/dynamic';
 import { Box } from '@chakra-ui/react';
 import nookies from 'nookies';
 import React from 'react';
 
 import { admin } from '@/lib/firebaseAdmin';
 import { useSearch } from '@/util/search';
-import { JobsTableHeader } from '@/components/JobsTableHeader';
-import Header from '@/components/Header';
-import JobsTable from '@/components/JobsTable';
-import JobsTableSkeleton from '@/components/JobsTableSkeleton';
-import Page from '@/components/Page';
 import { useJobsByAuthor } from '@/graphql/hooks';
+
+// Components
+const JobsTableHeaderComponent = dynamic(() =>
+  import('@/components/JobsTableHeader')
+);
+const HeaderComponent = dynamic(() => import('@/components/Header'));
+const JobsTableComponent = dynamic(() => import('@/components/JobsTable'));
+const JobsTableSkeletonComponent = dynamic(() =>
+  import('@/components/JobsTableSkeleton')
+);
+const PageComponent = dynamic(() => import('@/components/Page'));
 
 const LoadingState = ({ children }) => (
   <Box minH="100vh" backgroundColor="gray.100">
-    <Header active="jobs" />
+    <HeaderComponent active="jobs" />
     <Box px={8} maxW="1250px" margin="0 auto">
       {children}
     </Box>
@@ -28,7 +35,7 @@ const Jobs = ({ userId }) => {
     error && console.error(`Error in Jobs page: ${error}`);
     return (
       <LoadingState>
-        <JobsTableSkeleton />
+        <JobsTableSkeletonComponent />
       </LoadingState>
     );
   }
@@ -43,16 +50,16 @@ const Jobs = ({ userId }) => {
 
   return (
     <LoadingState>
-      <JobsTableHeader />
-      <JobsTable jobs={filteredJobs} />
+      <JobsTableHeaderComponent />
+      <JobsTableComponent jobs={filteredJobs} />
     </LoadingState>
   );
 };
 
 const JobsPage = ({ userId }) => (
-  <Page name="Jobs" path="/jobs">
+  <PageComponent name="Jobs" path="/jobs">
     <Jobs userId={userId} />
-  </Page>
+  </PageComponent>
 );
 
 export default JobsPage;
