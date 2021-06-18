@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import {
   Badge,
   Box,
@@ -10,6 +11,8 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+import { CheckIcon } from '@chakra-ui/icons';
+
 import {
   ALL_JOBS_QUERY,
   GET_CATEGORIES_BY_ID_QUERY,
@@ -18,9 +21,9 @@ import {
 
 import { addApolloState, initializeApollo } from '@/lib/apolloClient';
 import { useCategoriesById, useJobById } from '@/graphql/hooks';
-import AddJobModal from '@/components/AddJobModal';
-import Header from '@/components/Header';
-import { CheckIcon } from '@chakra-ui/icons';
+
+const AddJobModalComponent = dynamic(() => import('@/components/AddJobModal'));
+const HeaderComponent = dynamic(() => import('@/components/Header'));
 
 export async function getStaticPaths() {
   const apolloClient = initializeApollo();
@@ -81,7 +84,7 @@ const JobPage = () => {
   if (router.isFallback || loadingJob || loadingCategories) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
-        <Header />
+        <HeaderComponent />
         <Flex px={8} maxW="1250px" margin="50px auto" justifyContent="center">
           <Spinner
             thickness="4px"
@@ -123,7 +126,7 @@ const JobPage = () => {
 
   return (
     <Box minH="100vh" backgroundColor="gray.100">
-      <Header />
+      <HeaderComponent />
       <Box px={8} maxW="1250px" margin="35px auto" backgroundColor="gray.100">
         <Box
           display="flex"
@@ -133,7 +136,7 @@ const JobPage = () => {
           top="70px"
           zIndex="1"
         >
-          <AddJobModal
+          <AddJobModalComponent
             buttonText="Edit Job"
             title="Edit Job"
             job={data.jobs_by_pk}

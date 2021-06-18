@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import { DeleteIcon, TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -28,7 +29,8 @@ import { DELETE_CATEGORY_BY_ID_MUTATION } from '@/graphql/mutations';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { useMutation } from '@apollo/client';
 import { useAuth } from '@/lib/auth';
-import EditCategoryModal from './EditCategoryModal';
+
+const EditCategoryModalComponent = dynamic(() => import('./EditCategoryModal'));
 
 export default function CategoriesTable({ categories = [] }) {
   const { user } = useAuth();
@@ -53,7 +55,9 @@ export default function CategoriesTable({ categories = [] }) {
     () =>
       categories.map(({ id, name }) => ({
         col1: name,
-        col2: <EditCategoryModal categoryName={name} categoryId={id} />,
+        col2: (
+          <EditCategoryModalComponent categoryName={name} categoryId={id} />
+        ),
         col3: <TooltipComponent id={id} name={name} />,
       })),
     [categories]

@@ -51,8 +51,7 @@ export default function Header({ active }) {
           </NextLink>
           <NextLink href="/jobs" passHref>
             <Link
-              mr={4}
-              ml={4}
+              mx={4}
               display="flex"
               flexDirection="column"
               alignItems="center"
@@ -69,8 +68,7 @@ export default function Header({ active }) {
               display="flex"
               flexDirection="column"
               alignItems="center"
-              px={2}
-              py={2}
+              p={2}
               borderBottom={active === 'categories' ? '2px solid black' : ''}
             >
               <Image
