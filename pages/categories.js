@@ -22,11 +22,14 @@ import { useAuth } from '@/lib/auth';
 import { MotionBox, MotionFlex } from '@/util/chakra-motion';
 import { sortCategories } from '@/util/helpers';
 
+// Components
+import Header from '@/components/Header';
+import Page from '@/components/Page';
+
+// Dynamic Render
 const CategoriesTableComponent = dynamic(() =>
   import('@/components/CategoriesTable')
 );
-const HeaderComponent = dynamic(() => import('@/components/Header'));
-const PageComponent = dynamic(() => import('@/components/Page'));
 
 const Categories = () => {
   const { user } = useAuth();
@@ -41,7 +44,7 @@ const Categories = () => {
   if (loading || !user) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
-        <HeaderComponent active="categories" />
+        <Header active="categories" />
         <Flex px={8} pt={8} justifyContent="center">
           <Spinner
             thickness="4px"
@@ -113,7 +116,7 @@ const Categories = () => {
 
   return (
     <Box minH="100vh" backgroundColor="gray.100">
-      <HeaderComponent active="categories" />
+      <Header active="categories" />
       <Flex maxW="1250px" margin="0 auto">
         <MotionBox
           ml={8}
@@ -178,9 +181,9 @@ const Categories = () => {
 };
 
 const CategoriesPage = () => (
-  <PageComponent name="Categories" path="/categories">
+  <Page name="Categories" path="/categories">
     <Categories />
-  </PageComponent>
+  </Page>
 );
 
 export default CategoriesPage;
