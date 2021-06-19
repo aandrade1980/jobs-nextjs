@@ -8,19 +8,21 @@ import { useSearch } from '@/util/search';
 import { useJobsByAuthor } from '@/graphql/hooks';
 
 // Components
+import Header from '@/components/Header';
+import Page from '@/components/Page';
+
+// Dynamic Render
 const JobsTableHeaderComponent = dynamic(() =>
   import('@/components/JobsTableHeader')
 );
-const HeaderComponent = dynamic(() => import('@/components/Header'));
 const JobsTableComponent = dynamic(() => import('@/components/JobsTable'));
 const JobsTableSkeletonComponent = dynamic(() =>
   import('@/components/JobsTableSkeleton')
 );
-const PageComponent = dynamic(() => import('@/components/Page'));
 
 const LoadingState = ({ children }) => (
   <Box minH="100vh" backgroundColor="gray.100">
-    <HeaderComponent active="jobs" />
+    <Header active="jobs" />
     <Box px={8} maxW="1250px" margin="0 auto">
       {children}
     </Box>
@@ -57,9 +59,9 @@ const Jobs = ({ userId }) => {
 };
 
 const JobsPage = ({ userId }) => (
-  <PageComponent name="Jobs" path="/jobs">
+  <Page name="Jobs" path="/jobs">
     <Jobs userId={userId} />
-  </PageComponent>
+  </Page>
 );
 
 export default JobsPage;

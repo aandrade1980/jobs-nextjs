@@ -6,7 +6,7 @@ import {
   Grid,
   Heading,
   Spinner,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -16,32 +16,35 @@ import { CheckIcon } from '@chakra-ui/icons';
 import {
   ALL_JOBS_QUERY,
   GET_CATEGORIES_BY_ID_QUERY,
-  GET_JOB_BY_ID_QUERY,
+  GET_JOB_BY_ID_QUERY
 } from '@/graphql/queries';
 
 import { addApolloState, initializeApollo } from '@/lib/apolloClient';
 import { useCategoriesById, useJobById } from '@/graphql/hooks';
 
+// Components
+import Header from '@/components/Header';
+
+// Dynamic Render
 const AddJobModalComponent = dynamic(() => import('@/components/AddJobModal'));
-const HeaderComponent = dynamic(() => import('@/components/Header'));
 
 export async function getStaticPaths() {
   const apolloClient = initializeApollo();
   const {
-    data: { jobs },
+    data: { jobs }
   } = await apolloClient.query({
-    query: ALL_JOBS_QUERY,
+    query: ALL_JOBS_QUERY
   });
 
   const paths = jobs.map(({ id }) => ({
     params: {
-      jobId: id,
-    },
+      jobId: id
+    }
   }));
 
   return {
     paths,
-    fallback: true,
+    fallback: true
   };
 }
 
@@ -51,30 +54,30 @@ export async function getStaticProps({ params }) {
 
   const { data } = await apolloClient.query({
     query: GET_JOB_BY_ID_QUERY,
-    variables: { id: jobId },
+    variables: { id: jobId }
   });
 
   await apolloClient.query({
     query: GET_CATEGORIES_BY_ID_QUERY,
-    variables: { _in: data.jobs_by_pk.categoriesIds },
+    variables: { _in: data.jobs_by_pk.categoriesIds }
   });
 
   return addApolloState(apolloClient, {
-    props: {},
+    props: {}
   });
 }
 
 const JobPage = () => {
   const router = useRouter();
   const {
-    query: { jobId },
+    query: { jobId }
   } = router;
   const { loading: loadingJob, error: errorJob, data } = useJobById(jobId);
 
   const {
     loading: loadingCategories,
     error: errorCategories,
-    data: dataCategories,
+    data: dataCategories
   } = useCategoriesById(data?.jobs_by_pk?.categoriesIds);
 
   if (errorJob || errorCategories) {
@@ -84,7 +87,7 @@ const JobPage = () => {
   if (router.isFallback || loadingJob || loadingCategories) {
     return (
       <Box h="100vh" backgroundColor="gray.100">
-        <HeaderComponent />
+        <Header />
         <Flex px={8} maxW="1250px" margin="50px auto" justifyContent="center">
           <Spinner
             thickness="4px"
@@ -105,7 +108,7 @@ const JobPage = () => {
     imageUrl,
     postedDate,
     requestSent,
-    title,
+    title
   } = data.jobs_by_pk;
 
   const { categories } = dataCategories;
@@ -118,7 +121,7 @@ const JobPage = () => {
     'yellow',
     'teal',
     'cyan',
-    'pink',
+    'pink'
   ];
 
   const randomItem = () =>
@@ -126,7 +129,7 @@ const JobPage = () => {
 
   return (
     <Box minH="100vh" backgroundColor="gray.100">
-      <HeaderComponent />
+      <Header />
       <Box px={8} maxW="1250px" margin="35px auto" backgroundColor="gray.100">
         <Box
           display="flex"
