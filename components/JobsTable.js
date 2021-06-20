@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import { CheckIcon } from '@chakra-ui/icons';
 import { Box, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
