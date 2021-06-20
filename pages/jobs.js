@@ -23,7 +23,7 @@ const JobsTableSkeletonComponent = dynamic(() =>
 const LoadingState = ({ children }) => (
   <Box minH="100vh" backgroundColor="gray.100">
     <Header active="jobs" />
-    <Box px={8} maxW="1250px" margin="0 auto">
+    <Box as="main" px={8} maxW="1250px" margin="0 auto">
       {children}
     </Box>
   </Box>

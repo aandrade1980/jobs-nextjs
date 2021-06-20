@@ -117,7 +117,7 @@ const Categories = () => {
   return (
     <Box minH="100vh" backgroundColor="gray.100">
       <Header active="categories" />
-      <Flex maxW="1250px" margin="0 auto">
+      <Flex as="main" maxW="1250px" margin="0 auto">
         <MotionBox
           ml={8}
           mb={2}

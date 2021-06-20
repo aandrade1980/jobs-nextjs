@@ -10,9 +10,9 @@ export default function Header({ active }) {
   const { user, signout } = useAuth();
 
   return (
-    <div>
+    <header>
       <style jsx>{`
-        div {
+        header {
           display: flex;
           width: 100%;
           margin-bottom: 2rem;
@@ -26,6 +26,7 @@ export default function Header({ active }) {
         }
       `}</style>
       <Flex
+        as="nav"
         alignItems="center"
         justifyContent="space-between"
         px={8}
@@ -91,6 +92,6 @@ export default function Header({ active }) {
           <Avatar size="sm" src={user?.photoURL} />
         </Flex>
       </Flex>
-    </div>
+    </header>
   );
 }
