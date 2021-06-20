@@ -35,6 +35,12 @@ const GlobalStyle = ({ children }) => (
   </>
 );
 
+export function reportWebVitals(metric) {
+  if (metric.label === 'web-vital') {
+    console.log(metric);
+  }
+}
+
 function MyApp({ Component, pageProps, err }) {
   const apolloClient = useApollo(pageProps);
 
