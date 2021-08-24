@@ -33,7 +33,8 @@ export async function getStaticPaths() {
   const {
     data: { jobs }
   } = await apolloClient.query({
-    query: ALL_JOBS_QUERY
+    query: ALL_JOBS_QUERY,
+    variables: { limit: 50 }
   });
 
   const paths = jobs.map(({ id }) => ({
@@ -63,22 +64,23 @@ export async function getStaticProps({ params }) {
   });
 
   return addApolloState(apolloClient, {
-    props: {}
+    props: { jobId }
   });
 }
 
-const JobPage = () => {
+const JobPage = props => {
   const router = useRouter();
   const {
-    query: { jobId }
-  } = router;
-  const { loading: loadingJob, error: errorJob, data } = useJobById(jobId);
+    loading: loadingJob,
+    error: errorJob,
+    data: job
+  } = useJobById(props.jobId);
 
   const {
     loading: loadingCategories,
     error: errorCategories,
     data: dataCategories
-  } = useCategoriesById(data?.jobs_by_pk?.categoriesIds);
+  } = useCategoriesById(job?.categoriesIds);
 
   if (errorJob || errorCategories) {
     console.error(`Error: ${errorJob || errorCategories}`);
@@ -109,7 +111,7 @@ const JobPage = () => {
     postedDate,
     requestSent,
     title
-  } = data.jobs_by_pk;
+  } = job;
 
   const { categories } = dataCategories;
 
@@ -142,7 +144,7 @@ const JobPage = () => {
           <AddJobModalComponent
             buttonText="Edit Job"
             title="Edit Job"
-            job={data.jobs_by_pk}
+            job={job}
           />
         </Box>
         <Grid

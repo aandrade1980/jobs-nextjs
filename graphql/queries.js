@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 
 // #Jobs
 export const ALL_JOBS_QUERY = gql`
-  query allJobs {
-    jobs {
+  query allJobs($limit: Int) {
+    jobs(limit: $limit) {
       id
     }
   }

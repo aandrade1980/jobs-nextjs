@@ -3,6 +3,7 @@ import { ThemeProvider, CSSReset } from '@chakra-ui/react';
 import { Global, css } from '@emotion/react';
 import { DefaultSeo } from 'next-seo';
 import { AnimateSharedLayout } from 'framer-motion';
+import NextNProgress from 'nextjs-progressbar';
 
 import theme from '@/styles/theme';
 import { useApollo } from '@/lib/apolloClient';
@@ -52,6 +53,7 @@ function MyApp({ Component, pageProps, err }) {
             <AnimateSharedLayout>
               <GlobalStyle />
               <DefaultSeo {...SEO} />
+              <NextNProgress />
               <Component {...pageProps} err={err} />
             </AnimateSharedLayout>
           </ThemeProvider>
