@@ -67,10 +67,10 @@ const Categories = () => {
       variables: { name, authorId },
       optimisticResponse: {
         insert_categories_one: {
-          name,
+          __typename: 'Categories',
           authorId,
           id: uuidv4(),
-          __typename: 'Categories'
+          name
         }
       },
       update: (cache, { data }) => {
@@ -79,10 +79,11 @@ const Categories = () => {
           variables: { authorId }
         });
 
-        const newCategory = data['insert_categories_one'];
+        const newCategory = Object.assign({}, data['insert_categories_one']);
 
         newCategory.name = name;
         newCategory.authorId = authorId;
+        newCategory.createdAt = new Date().toISOString().split('T')[0]; // Today Date in yyyy-mm--dd format
 
         const sortedCategories = sortCategories([
           newCategory,

@@ -53,12 +53,16 @@ export default function CategoriesTable({ categories = [] }) {
 
   const data = useMemo(
     () =>
-      categories.map(({ id, name }) => ({
+      categories.map(({ id, name, createdAt }) => ({
         col1: name,
         col2: (
-          <EditCategoryModalComponent categoryName={name} categoryId={id} />
+          <EditCategoryModalComponent
+            categoryName={name}
+            categoryId={id}
+            createdAt={createdAt}
+          />
         ),
-        col3: <TooltipComponent id={id} name={name} />,
+        col3: <TooltipComponent id={id} name={name} />
       })),
     [categories]
   );
