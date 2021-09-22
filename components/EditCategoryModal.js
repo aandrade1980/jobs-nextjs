@@ -26,7 +26,11 @@ import { sortCategories } from '@/util/helpers';
 
 import ErrorMessage from './ErrorMessage';
 
-export default function EditCategoryModal({ categoryId, categoryName }) {
+export default function EditCategoryModal({
+  categoryId,
+  categoryName,
+  createdAt
+}) {
   const { user } = useAuth();
   const authorId = user?.uid;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -56,10 +60,11 @@ export default function EditCategoryModal({ categoryId, categoryName }) {
               variables: { id: categoryId, name: values.name },
               optimisticResponse: {
                 update_categories_by_pk: {
-                  name: values.name,
-                  id: categoryId,
+                  __typename: 'categories',
                   authorId,
-                  __typename: 'categories'
+                  createdAt,
+                  id: categoryId,
+                  name: values.name
                 }
               },
               update: (cache, { data }) => {

@@ -27,7 +27,12 @@ export const CREATE_JOB_MUTATION = gql`
       }
     ) {
       returning {
+        company
         id
+        imageUrl
+        postedDate
+        requestSent
+        title
       }
     }
   }

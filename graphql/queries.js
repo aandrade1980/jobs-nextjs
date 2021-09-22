@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 // #Jobs
 export const ALL_JOBS_QUERY = gql`
-  query allJobs($limit: Int) {
+  query allJobs($limit: Int) @cached(ttl: 300) {
     jobs(limit: $limit) {
       id
     }
@@ -48,14 +48,15 @@ export const GET_CATEGORIES_BY_AUTHOR_ID_QUERY = gql`
       where: { authorId: { _eq: $authorId } }
       order_by: { name: asc }
     ) {
-      name
+      createdAt
       id
+      name
     }
   }
 `;
 
 export const GET_CATEGORIES_BY_ID_QUERY = gql`
-  query getCategories($_in: [uuid!]) {
+  query getCategories($_in: [uuid!]) @cached(ttl: 300) {
     categories(where: { id: { _in: $_in } }) {
       id
       name
