@@ -20,7 +20,6 @@ process.env.SENTRY_DSN = SENTRY_DSN;
 const basePath = '';
 
 module.exports = {
-  swcMinify: true,
   images: {
     domains: ['nextjs-job-post.s3.sa-east-1.amazonaws.com', 'i.scdn.co']
   },
