@@ -21,14 +21,14 @@ const basePath = '';
 
 module.exports = {
   images: {
-    domains: ['nextjs-job-post.s3.sa-east-1.amazonaws.com', 'i.scdn.co'],
+    domains: ['nextjs-job-post.s3.sa-east-1.amazonaws.com', 'i.scdn.co']
   },
   productionBrowserSourceMaps: true,
   env: {
     // Make the COMMIT_SHA available to the client so that Sentry events can be
     // marked for the release they belong to. It may be undefined if running
     // outside of Vercel
-    NEXT_PUBLIC_COMMIT_SHA: COMMIT_SHA,
+    NEXT_PUBLIC_COMMIT_SHA: COMMIT_SHA
   },
   webpack: (config, options) => {
     // In `pages/_app.js`, Sentry is imported from @sentry/browser. While
@@ -55,7 +55,7 @@ module.exports = {
       new options.webpack.DefinePlugin({
         'process.env.NEXT_IS_SERVER': JSON.stringify(
           options.isServer.toString()
-        ),
+        )
       })
     );
 
@@ -78,11 +78,11 @@ module.exports = {
           ignore: ['node_modules'],
           stripPrefix: ['webpack://_N_E/'],
           urlPrefix: `~${basePath}/_next`,
-          release: COMMIT_SHA,
+          release: COMMIT_SHA
         })
       );
     }
     return config;
   },
-  basePath,
+  basePath
 };
