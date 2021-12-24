@@ -154,7 +154,7 @@ function AddJobModal({ buttonText, title, job }) {
                 variables: { authorId }
               });
 
-              const newJob = data['insert_jobs'].returning[0];
+              const newJob = data.insert_jobs.returning[0];
 
               cache.writeQuery({
                 query: GET_JOBS_BY_AUTHOR_QUERY,

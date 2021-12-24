@@ -44,10 +44,10 @@ export default function RemoveJobDialog({ id, imageUrl }) {
 
     await deleteJob({
       variables: { id },
-      update: (cache, { data }) => {
+      update: cache => {
         const cacheData = cache.readQuery({
           query: GET_JOBS_BY_AUTHOR_QUERY,
-          variables: { authorId: user.uid },
+          variables: { authorId: user.uid }
         });
 
         const updatedJobs = cacheData.jobs.filter(job => job.id !== id);
@@ -56,10 +56,10 @@ export default function RemoveJobDialog({ id, imageUrl }) {
           query: GET_JOBS_BY_AUTHOR_QUERY,
           variables: { authorId: user.uid },
           data: {
-            jobs: [...updatedJobs],
-          },
+            jobs: [...updatedJobs]
+          }
         });
-      },
+      }
     });
 
     toast({

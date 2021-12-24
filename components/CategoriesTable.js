@@ -96,7 +96,7 @@ export default function CategoriesTable({ categories = [] }) {
           variables: { authorId },
         });
 
-        const deletedCat = data['delete_categories_by_pk'];
+        const deletedCat = data.delete_categories_by_pk;
 
         const updatedCategories = cacheData.categories.filter(
           category => category.id !== deletedCat.id

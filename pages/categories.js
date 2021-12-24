@@ -79,7 +79,7 @@ const Categories = () => {
           variables: { authorId }
         });
 
-        const newCategory = Object.assign({}, data['insert_categories_one']);
+        const newCategory = Object.assign({}, data.insert_categories_one);
 
         newCategory.name = name;
         newCategory.authorId = authorId;

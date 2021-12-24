@@ -73,7 +73,7 @@ export default function EditCategoryModal({
                   variables: { authorId }
                 });
 
-                const updatedCategory = data['update_categories_by_pk'];
+                const updatedCategory = data.update_categories_by_pk;
 
                 const updatedCategoryIndex = categories.findIndex(
                   category => category.id === categoryId
