@@ -1,10 +1,12 @@
+import { motion } from 'framer-motion';
+import { MotionBox, MotionButton } from '@/util/chakra-motion';
 import { useCallback } from 'react';
 import Head from 'next/head';
-import { motion } from 'framer-motion';
 
 import { GoogleIcon } from '@/components/Icons';
-import { MotionBox, MotionButton } from '@/util/chakra-motion';
+
 import { useAuth } from '@/lib/auth';
+
 import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
