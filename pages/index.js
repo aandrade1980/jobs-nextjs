@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import { MotionBox, MotionButton } from '@/util/chakra-motion';
+import { motion } from 'framer-motion';
 import { useCallback } from 'react';
 import Head from 'next/head';
 
