@@ -7,7 +7,7 @@ import NowPlaying from './NowPlaying';
 import NavItem from './NavItem';
 
 export default function Header({ active }) {
-  const { user, signout } = useAuth();
+  const { user, signOut } = useAuth();
 
   return (
     <header>
@@ -64,7 +64,7 @@ export default function Header({ active }) {
             mx={5}
             fontSize="sm"
             color="gray.600"
-            onClick={() => signout()}
+            onClick={() => signOut()}
           >
             Log Out
           </ChakraLink>

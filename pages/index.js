@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 
@@ -7,7 +8,12 @@ import { useAuth } from '@/lib/auth';
 import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
-  const { signinWithGoogle } = useAuth();
+  const { signInWithGoogle } = useAuth();
+
+  const handleSingInWithGoogle = useCallback(
+    () => signInWithGoogle(),
+    [signInWithGoogle]
+  );
 
   return (
     <div>
@@ -48,7 +54,7 @@ export default function Home() {
           fontWeight="medium"
           _hover={{ bg: 'gray.200' }}
           _active={{ transform: 'scale(0.95)', bg: 'gray.100' }}
-          onClick={() => signinWithGoogle()}
+          onClick={handleSingInWithGoogle}
         >
           Continue with Google
         </MotionButton>
