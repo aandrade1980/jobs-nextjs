@@ -1,13 +1,12 @@
+import Head from 'next/head';
 import { MotionBox, MotionButton } from '@/util/chakra-motion';
 import { motion } from 'framer-motion';
 import { useCallback } from 'react';
-import Head from 'next/head';
-
-import { GoogleIcon } from '@/components/Icons';
 
 import { useAuth } from '@/lib/auth';
 
 import NowPlaying from '@/components/NowPlaying';
+import { GoogleIcon } from '@/components/Icons';
 
 export default function Home() {
   const { signInWithGoogle } = useAuth();
