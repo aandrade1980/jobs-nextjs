@@ -33,8 +33,9 @@ const Jobs = ({ userId }) => {
   const { loading: loadingJobs, error, data } = useJobsByAuthor(userId);
   const { search } = useSearch();
 
-  if (error || loadingJobs) {
-    error && console.error(`Error in Jobs page: ${error}`);
+  if (error) console.error(`Error in Jobs page: ${error}`);
+
+  if (loadingJobs) {
     return (
       <LoadingState>
         <JobsTableSkeletonComponent />

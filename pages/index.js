@@ -1,7 +1,7 @@
-import Head from 'next/head';
 import { MotionBox, MotionButton } from '@/util/chakra-motion';
 import { motion } from 'framer-motion';
 import { useCallback } from 'react';
+import Head from 'next/head';
 
 import { useAuth } from '@/lib/auth';
 

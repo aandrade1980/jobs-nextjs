@@ -51,7 +51,7 @@ export default function CategoriesTable({ categories = [] }) {
     );
   };
 
-  const data = useMemo(
+  const memoData = useMemo(
     () =>
       categories.map(({ id, name, createdAt }) => ({
         col1: name,
@@ -71,7 +71,7 @@ export default function CategoriesTable({ categories = [] }) {
     () => [
       { Header: 'Name', accessor: 'col1' },
       { Header: '', accessor: 'col2' },
-      { Header: '', accessor: 'col3' },
+      { Header: '', accessor: 'col3' }
     ],
     []
   );
@@ -93,7 +93,7 @@ export default function CategoriesTable({ categories = [] }) {
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId },
+          variables: { authorId }
         });
 
         const deletedCat = data.delete_categories_by_pk;
@@ -106,10 +106,10 @@ export default function CategoriesTable({ categories = [] }) {
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
           variables: { authorId },
           data: {
-            categories: updatedCategories,
-          },
+            categories: updatedCategories
+          }
         });
-      },
+      }
     });
     toast({
       title: 'Category deleted.',
@@ -117,7 +117,7 @@ export default function CategoriesTable({ categories = [] }) {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top',
+      position: 'top'
     });
   };
 
@@ -140,9 +140,9 @@ export default function CategoriesTable({ categories = [] }) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
-    setFilter,
+    setFilter
   } = useTable(
-    { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
+    { columns, memoData, initialState: { pageIndex: 0, pageSize: 10 } },
     useFilters,
     useSortBy,
     usePagination
@@ -172,15 +172,15 @@ export default function CategoriesTable({ categories = [] }) {
           <Thead>
             {headerGroups.map((headerGroup, index) => (
               <Tr key={index} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => (
-                  <Fragment key={index}>
+                {headerGroup.headers.map((column, i) => (
+                  <Fragment key={i}>
                     <Th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                       style={{
                         borderBottom: 'solid 1px #E2E8F0',
                         background: '#F7FAFC',
                         color: 'black',
-                        fontWeight: 'bold',
+                        fontWeight: 'bold'
                       }}
                     >
                       {column.render('Header')}
@@ -204,8 +204,8 @@ export default function CategoriesTable({ categories = [] }) {
               prepareRow(row);
               return (
                 <Tr key={index} {...row.getRowProps()}>
-                  {row.cells.map((cell, index) => (
-                    <Td key={index} {...cell.getCellProps()}>
+                  {row.cells.map((cell, i) => (
+                    <Td key={i} {...cell.getCellProps()}>
                       {cell.render('Cell')}
                     </Td>
                   ))}
@@ -255,9 +255,9 @@ export default function CategoriesTable({ categories = [] }) {
             maxW="105px"
             borderColor="gray.400"
           >
-            {[10, 20, 30, 40, 50].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
+            {[10, 20, 30, 40, 50].map(size => (
+              <option key={size} value={size}>
+                Show {size}
               </option>
             ))}
           </Select>
