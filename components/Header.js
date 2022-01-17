@@ -2,12 +2,21 @@ import Link from 'next/link';
 import { Avatar, Flex, Grid, Link as ChakraLink } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
-import { useAuth } from '@/lib/auth';
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// Utils
 import NowPlaying from './NowPlaying';
+
+// Components
 import NavItem from './NavItem';
 
 export default function Header({ active }) {
-  const { user, signout } = useAuth();
+  const { user, signOut } = useAuth();
+
+  function handleSignOut() {
+    signOut({ callbackUrl: '/' });
+  }
 
   return (
     <header>
@@ -64,11 +73,11 @@ export default function Header({ active }) {
             mx={5}
             fontSize="sm"
             color="gray.600"
-            onClick={() => signout()}
+            onClick={handleSignOut}
           >
             Log Out
           </ChakraLink>
-          <Avatar size="sm" src={user?.photoURL} />
+          <Avatar size="sm" src={user?.image} />
         </Flex>
       </Flex>
     </header>

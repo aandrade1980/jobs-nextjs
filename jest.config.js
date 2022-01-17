@@ -7,7 +7,8 @@ module.exports = {
   moduleNameMapper: {
     '^@/components(.*)$': '<rootDir>/components$1',
     '^@/lib(.*)$': '<rootDir>/lib$1',
-    '^@/util(.*)$': '<rootDir>/util$1'
+    '^@/util(.*)$': '<rootDir>/util$1',
+    '^@/hooks(.*)$': '<rootDir>/hooks$1'
   },
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: ['./jest.setup.js']

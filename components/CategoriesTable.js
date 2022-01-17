@@ -20,21 +20,24 @@ import {
   Thead,
   Tooltip,
   Tr,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { Fragment, useMemo, useState } from 'react';
 import { useTable, useSortBy, useFilters, usePagination } from 'react-table';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+import { useMutation } from '@apollo/client';
+
+// GraphQL
 import { DELETE_CATEGORY_BY_ID_MUTATION } from '@/graphql/mutations';
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
-import { useMutation } from '@apollo/client';
-import { useAuth } from '@/lib/auth';
 
 const EditCategoryModalComponent = dynamic(() => import('./EditCategoryModal'));
 
 export default function CategoriesTable({ categories = [] }) {
   const { user } = useAuth();
-  const authorId = user?.uid;
+  const authorId = user?.id;
 
   const TooltipComponent = ({ id, name }) => {
     return (
@@ -71,7 +74,7 @@ export default function CategoriesTable({ categories = [] }) {
     () => [
       { Header: 'Name', accessor: 'col1' },
       { Header: '', accessor: 'col2' },
-      { Header: '', accessor: 'col3' },
+      { Header: '', accessor: 'col3' }
     ],
     []
   );
@@ -93,7 +96,7 @@ export default function CategoriesTable({ categories = [] }) {
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId },
+          variables: { authorId }
         });
 
         const deletedCat = data['delete_categories_by_pk'];
@@ -106,10 +109,10 @@ export default function CategoriesTable({ categories = [] }) {
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
           variables: { authorId },
           data: {
-            categories: updatedCategories,
-          },
+            categories: updatedCategories
+          }
         });
-      },
+      }
     });
     toast({
       title: 'Category deleted.',
@@ -117,7 +120,7 @@ export default function CategoriesTable({ categories = [] }) {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top',
+      position: 'top'
     });
   };
 
@@ -140,7 +143,7 @@ export default function CategoriesTable({ categories = [] }) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
-    setFilter,
+    setFilter
   } = useTable(
     { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
     useFilters,
@@ -180,7 +183,7 @@ export default function CategoriesTable({ categories = [] }) {
                         borderBottom: 'solid 1px #E2E8F0',
                         background: '#F7FAFC',
                         color: 'black',
-                        fontWeight: 'bold',
+                        fontWeight: 'bold'
                       }}
                     >
                       {column.render('Header')}

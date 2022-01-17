@@ -1,28 +1,22 @@
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// Components
 import { GoogleIcon } from '@/components/Icons';
 import { MotionBox, MotionButton } from '@/util/chakra-motion';
-import { useAuth } from '@/lib/auth';
 import NowPlaying from '@/components/NowPlaying';
 
 export default function Home() {
-  const { signinWithGoogle } = useAuth();
+  const { signIn } = useAuth();
 
   return (
     <div>
       <Head>
         <title>Post Jobs</title>
         <link rel="icon" href="/favicon.ico" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          if (document.cookie && document.cookie.includes('token')) {
-            window.location.href = "/jobs"
-          }
-        `
-          }}
-        />
       </Head>
 
       <MotionBox
@@ -48,7 +42,7 @@ export default function Home() {
           fontWeight="medium"
           _hover={{ bg: 'gray.200' }}
           _active={{ transform: 'scale(0.95)', bg: 'gray.100' }}
-          onClick={() => signinWithGoogle()}
+          onClick={() => signIn('google', { callbackUrl: '/jobs' })}
         >
           Continue with Google
         </MotionButton>

@@ -24,6 +24,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { s3 } from '@/lib/aws.config';
 import { useState } from 'react';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// GraphQL
 import {
   CREATE_JOB_MUTATION,
   UPDATE_JOB_BY_ID_MUTATION
@@ -33,11 +37,10 @@ import {
   GET_JOB_BY_ID_QUERY,
   GET_JOBS_BY_AUTHOR_QUERY
 } from '@/graphql/queries';
-import { useAuth } from '@/lib/auth';
 
 function AddJobModal({ buttonText, title, job }) {
   const { user } = useAuth();
-  const authorId = user?.uid;
+  const authorId = user?.id;
   const [creatingJob, setCreatingJob] = useState(false);
   const [createJob] = useMutation(CREATE_JOB_MUTATION);
   const [updateJob] = useMutation(UPDATE_JOB_BY_ID_MUTATION, {
