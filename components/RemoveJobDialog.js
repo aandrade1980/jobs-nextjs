@@ -59,7 +59,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
 
         cache.writeQuery({
           query: GET_JOBS_BY_AUTHOR_QUERY,
-          variables: { authorId: user.uid },
+          variables: { authorId: user.id },
           data: {
             jobs: [...updatedJobs]
           }
