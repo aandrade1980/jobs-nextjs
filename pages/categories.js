@@ -12,15 +12,18 @@ import {
 import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { getSession } from 'next-auth/react';
 
 import ErrorMessage from '@/components/ErrorMessage';
 
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useCategoriesByAuthor } from '@/graphql/hooks';
-import { useAuth } from '@/lib/auth';
 import { MotionBox, MotionFlex } from '@/util/chakra-motion';
 import { sortCategories } from '@/util/helpers';
+
+// Hooks
+import { useAuth } from '@/hooks/hooks';
 
 // Components
 import Header from '@/components/Header';
@@ -33,7 +36,8 @@ const CategoriesTableComponent = dynamic(() =>
 
 const Categories = () => {
   const { user } = useAuth();
-  const authorId = user?.uid;
+  const authorId = user?.id;
+
   const { loading, error, data } = useCategoriesByAuthor(authorId);
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
@@ -186,5 +190,24 @@ const CategoriesPage = () => (
     <Categories />
   </Page>
 );
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {
+      session
+    }
+  };
+}
 
 export default CategoriesPage;

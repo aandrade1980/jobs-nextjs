@@ -1,7 +1,7 @@
-jest.mock('../lib/auth', () => ({
+jest.mock('../hooks/hooks.js', () => ({
   useAuth: () => ({
-    signInWithGoogle: {},
-  }),
+    signIn: {}
+  })
 }));
 import { fireEvent, render, screen } from '@testing-library/react';
 
@@ -20,12 +20,12 @@ describe('Index page', () => {
   });
 
   it('calls the onClick callback handler', () => {
-    const signInWithGoogle = jest.fn();
+    const signIn = jest.fn();
 
-    render(<MotionButton onClick={signInWithGoogle}></MotionButton>);
+    render(<MotionButton onClick={signIn}></MotionButton>);
 
     fireEvent.click(screen.getByRole('button'));
 
-    expect(signInWithGoogle).toHaveBeenCalledTimes(1);
+    expect(signIn).toHaveBeenCalledTimes(1);
   });
 });

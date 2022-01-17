@@ -1,10 +1,12 @@
 import dynamic from 'next/dynamic';
 import { Box } from '@chakra-ui/react';
-import nookies from 'nookies';
-import React from 'react';
+import { getSession } from 'next-auth/react';
 
-import { admin } from '@/lib/firebaseAdmin';
+// Utils
 import { useSearch } from '@/util/search';
+
+// Hooks
+import { useAuth } from '@/hooks/hooks';
 import { useJobsByAuthor } from '@/graphql/hooks';
 
 // Components
@@ -58,32 +60,33 @@ const Jobs = ({ userId }) => {
   );
 };
 
-const JobsPage = ({ userId }) => (
-  <Page name="Jobs" path="/jobs">
-    <Jobs userId={userId} />
-  </Page>
-);
+const JobsPage = () => {
+  const { user } = useAuth();
 
-export default JobsPage;
+  return (
+    <Page name="Jobs" path="/jobs">
+      {user?.id && <Jobs userId={user.id} />}
+    </Page>
+  );
+};
 
 export async function getServerSideProps(context) {
-  try {
-    const cookies = nookies.get(context);
-    const token = await admin.auth().verifyIdToken(cookies.token);
-    const { uid } = token;
+  const session = await getSession(context);
 
-    return {
-      props: { userId: uid }
-    };
-  } catch (error) {
-    console.error(error);
-    nookies.destroy(context, 'token');
-
+  if (!session) {
     return {
       redirect: {
         destination: '/',
-        statusCode: 302
+        permanent: false
       }
     };
   }
+
+  return {
+    props: {
+      session
+    }
+  };
 }
+
+export default JobsPage;
