@@ -8,14 +8,19 @@ import {
   AlertDialogOverlay,
   Button,
   IconButton,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useRef, useState } from 'react';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// GraphQL
 import { DELETE_JOB_BY_ID_MUTATION } from '@/graphql/mutations';
 import { GET_JOBS_BY_AUTHOR_QUERY } from '@/graphql/queries';
-import { useAuth } from '@/lib/auth';
+
+// S3
 import { s3 } from '@/lib/aws.config';
 
 export default function RemoveJobDialog({ id, imageUrl }) {
@@ -32,7 +37,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
 
       const params = {
         Bucket: 'nextjs-job-post',
-        Key: `${folder}/${fileName}`,
+        Key: `${folder}/${fileName}`
       };
 
       s3.deleteObject(params, err => {
@@ -44,22 +49,22 @@ export default function RemoveJobDialog({ id, imageUrl }) {
 
     await deleteJob({
       variables: { id },
-      update: (cache, { data }) => {
+      update: cache => {
         const cacheData = cache.readQuery({
           query: GET_JOBS_BY_AUTHOR_QUERY,
-          variables: { authorId: user.uid },
+          variables: { authorId: user.id }
         });
 
         const updatedJobs = cacheData.jobs.filter(job => job.id !== id);
 
         cache.writeQuery({
           query: GET_JOBS_BY_AUTHOR_QUERY,
-          variables: { authorId: user.uid },
+          variables: { authorId: user.id },
           data: {
-            jobs: [...updatedJobs],
-          },
+            jobs: [...updatedJobs]
+          }
         });
-      },
+      }
     });
 
     toast({
@@ -68,7 +73,7 @@ export default function RemoveJobDialog({ id, imageUrl }) {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top',
+      position: 'top'
     });
   };
 

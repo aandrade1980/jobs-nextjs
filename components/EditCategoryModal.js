@@ -18,17 +18,27 @@ import {
 import { Formik } from 'formik';
 import { useRef } from 'react';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
 import { useMutation } from '@apollo/client';
-import { useAuth } from '@/lib/auth';
+
+// GraphQL
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { UPDATE_CATEGORY_MUTATION } from '@/graphql/mutations';
+
+// Utils
 import { sortCategories } from '@/util/helpers';
 
+// Components
 import ErrorMessage from './ErrorMessage';
 
-export default function EditCategoryModal({ categoryId, categoryName }) {
+export default function EditCategoryModal({
+  categoryId,
+  categoryName,
+  createdAt
+}) {
   const { user } = useAuth();
-  const authorId = user?.uid;
+  const authorId = user?.id;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [updateCategory] = useMutation(UPDATE_CATEGORY_MUTATION);
   const toast = useToast();
@@ -56,10 +66,11 @@ export default function EditCategoryModal({ categoryId, categoryName }) {
               variables: { id: categoryId, name: values.name },
               optimisticResponse: {
                 update_categories_by_pk: {
-                  name: values.name,
-                  id: categoryId,
+                  __typename: 'categories',
                   authorId,
-                  __typename: 'categories'
+                  createdAt,
+                  id: categoryId,
+                  name: values.name
                 }
               },
               update: (cache, { data }) => {

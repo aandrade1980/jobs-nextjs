@@ -1,18 +1,27 @@
-import { Avatar, Flex, Link, Text } from '@chakra-ui/react';
-import Image from 'next/image';
-import NextLink from 'next/link';
+import Link from 'next/link';
+import { Avatar, Flex, Grid, Link as ChakraLink } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
-import { useAuth } from '@/lib/auth';
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// Utils
 import NowPlaying from './NowPlaying';
 
+// Components
+import NavItem from './NavItem';
+
 export default function Header({ active }) {
-  const { user, signout } = useAuth();
+  const { user, signOut } = useAuth();
+
+  function handleSignOut() {
+    signOut({ callbackUrl: '/' });
+  }
 
   return (
-    <div>
+    <header>
       <style jsx>{`
-        div {
+        header {
           display: flex;
           width: 100%;
           margin-bottom: 2rem;
@@ -26,6 +35,7 @@ export default function Header({ active }) {
         }
       `}</style>
       <Flex
+        as="nav"
         alignItems="center"
         justifyContent="space-between"
         px={8}
@@ -34,65 +44,42 @@ export default function Header({ active }) {
         w="full"
         h="60px"
       >
-        <Flex align="center" h="100%">
-          <NextLink href="/jobs" passHref>
-            <Link
-              display="flex"
-              alignContent="center"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              px={4}
-              py={1}
-            >
-              <Image src="/images/home.svg" alt="Home" height={28} width={28} />
-              <Text fontSize="xs">home</Text>
-            </Link>
-          </NextLink>
-          <NextLink href="/jobs" passHref>
-            <Link
-              mr={4}
-              ml={4}
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              px={4}
-              py={2}
-              borderBottom={active === 'jobs' ? '2px solid black' : ''}
-            >
-              <Image src="/images/jobs.svg" alt="Jobs" height={28} width={28} />
-              <Text fontSize="xs">jobs</Text>
-            </Link>
-          </NextLink>
-          <NextLink href="/categories" passHref>
-            <Link
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              px={2}
-              py={2}
-              borderBottom={active === 'categories' ? '2px solid black' : ''}
-            >
-              <Image
-                src="/images/categories.svg"
-                alt="Categories"
-                height={28}
-                width={28}
-              />
-              <Text fontSize="xs">categories</Text>
-            </Link>
-          </NextLink>
-        </Flex>
+        <Grid
+          h="100%"
+          templateColumns="1fr 1fr 1fr"
+          justifyItems="center"
+          alignItems="center"
+          gap={4}
+        >
+          <Link href="/jobs" passHref>
+            <NavItem src="/images/home.svg" text="home" active={active} />
+          </Link>
+          <Link href="/jobs" passHref>
+            <NavItem src="/images/jobs.svg" text="jobs" active={active} />
+          </Link>
+          <Link href="/categories" passHref>
+            <NavItem
+              src="/images/categories.svg"
+              text="categories"
+              active={active}
+            />
+          </Link>
+        </Grid>
         <Flex justifyContent="center" alignItems="center">
           <motion.div layoutId="now-playing" drag>
             <NowPlaying />
           </motion.div>
-          <Link mx={5} fontSize="sm" color="gray.600" onClick={() => signout()}>
+          <ChakraLink
+            mx={5}
+            fontSize="sm"
+            color="gray.600"
+            onClick={handleSignOut}
+          >
             Log Out
-          </Link>
-          <Avatar size="sm" src={user?.photoURL} />
+          </ChakraLink>
+          <Avatar size="sm" src={user?.image} />
         </Flex>
       </Flex>
-    </div>
+    </header>
   );
 }

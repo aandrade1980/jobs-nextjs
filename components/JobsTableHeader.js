@@ -12,7 +12,7 @@ import { useSearch } from '@/util/search';
 
 import AddJobModal from './AddJobModal';
 
-export const JobsTableHeader = () => {
+export default function JobsTableHeader() {
   const { onSearch, search, setSearch } = useSearch();
   const inputRef = useRef();
 
@@ -43,4 +43,4 @@ export const JobsTableHeader = () => {
       <AddJobModal buttonText="Add Job" title="Add Job" />
     </Flex>
   );
-};
+}

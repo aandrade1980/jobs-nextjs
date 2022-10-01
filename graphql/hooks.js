@@ -18,10 +18,11 @@ export const useJobsByAuthor = authorId => {
 export const useJobById = jobId => {
   const { loading, error, data } = useQuery(GET_JOB_BY_ID_QUERY, {
     variables: { id: jobId },
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    skip: !jobId
   });
 
-  return { loading, error, data };
+  return { loading, error, data: data?.jobs_by_pk };
 };
 
 export const useCategoriesByAuthor = authorId => {

@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import { useMutation } from '@apollo/client';
 import {
   Box,
@@ -6,27 +7,37 @@ import {
   FormControl,
   Input,
   Spinner,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { getSession } from 'next-auth/react';
 
-import CategoriesTable from '@/components/CategoriesTable';
 import ErrorMessage from '@/components/ErrorMessage';
-import Header from '@/components/Header';
-import Page from '@/components/Page';
 
 import { GET_CATEGORIES_BY_AUTHOR_ID_QUERY } from '@/graphql/queries';
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations';
 import { useCategoriesByAuthor } from '@/graphql/hooks';
-import { useAuth } from '@/lib/auth';
 import { MotionBox, MotionFlex } from '@/util/chakra-motion';
 import { sortCategories } from '@/util/helpers';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// Components
+import Header from '@/components/Header';
+import Page from '@/components/Page';
+
+// Dynamic Render
+const CategoriesTableComponent = dynamic(() =>
+  import('@/components/CategoriesTable')
+);
+
 const Categories = () => {
   const { user } = useAuth();
-  const authorId = user?.uid;
+  const authorId = user?.id;
+
   const { loading, error, data } = useCategoriesByAuthor(authorId);
   const [createCategory, { loading: creatingCategory }] = useMutation(
     CREATE_CATEGORY_MUTATION
@@ -60,36 +71,37 @@ const Categories = () => {
       variables: { name, authorId },
       optimisticResponse: {
         insert_categories_one: {
-          name,
+          __typename: 'Categories',
           authorId,
           id: uuidv4(),
-          __typename: 'Categories',
-        },
+          name
+        }
       },
       update: (cache, { data }) => {
         const cacheData = cache.readQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
-          variables: { authorId },
+          variables: { authorId }
         });
 
-        const newCategory = data['insert_categories_one'];
+        const newCategory = Object.assign({}, data['insert_categories_one']);
 
         newCategory.name = name;
         newCategory.authorId = authorId;
+        newCategory.createdAt = new Date().toISOString().split('T')[0]; // Today Date in yyyy-mm--dd format
 
         const sortedCategories = sortCategories([
           newCategory,
-          ...cacheData.categories,
+          ...cacheData.categories
         ]);
 
         cache.writeQuery({
           query: GET_CATEGORIES_BY_AUTHOR_ID_QUERY,
           variables: { authorId },
           data: {
-            categories: sortedCategories,
-          },
+            categories: sortedCategories
+          }
         });
-      },
+      }
     });
     toast({
       title: 'Category created.',
@@ -97,7 +109,7 @@ const Categories = () => {
       status: 'success',
       duration: 5000,
       isClosable: true,
-      position: 'top',
+      position: 'top'
     });
     e.target.reset();
   };
@@ -110,7 +122,7 @@ const Categories = () => {
   return (
     <Box minH="100vh" backgroundColor="gray.100">
       <Header active="categories" />
-      <Flex maxW="1250px" margin="0 auto">
+      <Flex as="main" maxW="1250px" margin="0 auto">
         <MotionBox
           ml={8}
           mb={2}
@@ -120,7 +132,7 @@ const Categories = () => {
           animate={{ x: 0 }}
           transition={{ type: 'spring' }}
         >
-          <CategoriesTable categories={categories} />
+          <CategoriesTableComponent categories={categories} />
         </MotionBox>
         <MotionFlex
           as="form"
@@ -138,7 +150,7 @@ const Categories = () => {
               placeholder="Javascript"
               ref={register({
                 required: true,
-                validate: alreadyExists,
+                validate: alreadyExists
               })}
               borderColor="gray.400"
               backgroundColor="white"
@@ -158,8 +170,7 @@ const Categories = () => {
             color="white"
             fontWeight="medium"
             type="submit"
-            pl={8}
-            pr={8}
+            px={8}
             ml={3}
             isLoading={creatingCategory}
             leftIcon={<AddIcon w={3} h={3} />}
@@ -179,5 +190,24 @@ const CategoriesPage = () => (
     <Categories />
   </Page>
 );
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {
+      session
+    }
+  };
+}
 
 export default CategoriesPage;

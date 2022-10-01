@@ -24,6 +24,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { s3 } from '@/lib/aws.config';
 import { useState } from 'react';
 
+// Hooks
+import { useAuth } from '@/hooks/hooks';
+
+// GraphQL
 import {
   CREATE_JOB_MUTATION,
   UPDATE_JOB_BY_ID_MUTATION
@@ -33,11 +37,10 @@ import {
   GET_JOB_BY_ID_QUERY,
   GET_JOBS_BY_AUTHOR_QUERY
 } from '@/graphql/queries';
-import { useAuth } from '@/lib/auth';
 
 function AddJobModal({ buttonText, title, job }) {
   const { user } = useAuth();
-  const authorId = user?.uid;
+  const authorId = user?.id;
   const [creatingJob, setCreatingJob] = useState(false);
   const [createJob] = useMutation(CREATE_JOB_MUTATION);
   const [updateJob] = useMutation(UPDATE_JOB_BY_ID_MUTATION, {
@@ -112,6 +115,7 @@ function AddJobModal({ buttonText, title, job }) {
           }
         });
       } catch (error) {
+        // TODO: add a error Toast
         console.log(`Error updating job: ${error}`);
       }
     } else {
@@ -123,49 +127,53 @@ function AddJobModal({ buttonText, title, job }) {
         fileName = file.name;
         filePath = `${encodeURIComponent(title)}-${Date.now()}/${fileName}`;
 
-        // Todo move s3 url to .env file
-        imageUrl = `http://nextjs-job-post.s3.sa-east-1.amazonaws.com/${encodeURIComponent(
-          filePath
-        )}`;
+        imageUrl = `${
+          process.env.NEXT_PUBLIC_AWS_BUCKET_URL
+        }/${encodeURIComponent(filePath)}`;
       }
 
-      await Promise.all([
-        image.length
-          ? s3
-              .upload({ Key: filePath, Body: file, ACL: 'public-read' })
-              .promise()
-          : null,
-        createJob({
-          variables: {
-            authorId,
-            categoriesIds: parsedCategoriesIds,
-            company,
-            description,
-            email,
-            imageUrl,
-            postedDate: new Date(postedDate),
-            requestSent,
-            title
-          },
-          update: (cache, { data }) => {
-            const cacheData = cache.readQuery({
-              query: GET_JOBS_BY_AUTHOR_QUERY,
-              variables: { authorId }
-            });
+      try {
+        await Promise.all([
+          image.length
+            ? s3
+                .upload({ Key: filePath, Body: file, ACL: 'public-read' })
+                .promise()
+            : null,
+          createJob({
+            variables: {
+              authorId,
+              categoriesIds: parsedCategoriesIds,
+              company,
+              description,
+              email,
+              imageUrl,
+              postedDate: new Date(postedDate),
+              requestSent,
+              title
+            },
+            update: (cache, { data }) => {
+              const cacheData = cache.readQuery({
+                query: GET_JOBS_BY_AUTHOR_QUERY,
+                variables: { authorId }
+              });
 
-            const newJob = data['insert_jobs'].returning[0];
+              const newJob = data['insert_jobs'].returning[0];
 
-            cache.writeQuery({
-              query: GET_JOBS_BY_AUTHOR_QUERY,
-              variables: { authorId },
-              data: {
-                ...cacheData,
-                jobs: [newJob, ...cacheData.jobs]
-              }
-            });
-          }
-        })
-      ]);
+              cache.writeQuery({
+                query: GET_JOBS_BY_AUTHOR_QUERY,
+                variables: { authorId },
+                data: {
+                  ...cacheData,
+                  jobs: [newJob, ...cacheData.jobs]
+                }
+              });
+            }
+          })
+        ]);
+      } catch (error) {
+        // TODO: add a error Toast
+        console.log('Error creating job: ', error);
+      }
     }
 
     setCreatingJob(false);

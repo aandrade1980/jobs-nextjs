@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import {
   Badge,
   Box,
@@ -5,40 +6,46 @@ import {
   Grid,
   Heading,
   Spinner,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+import { CheckIcon } from '@chakra-ui/icons';
+
 import {
   ALL_JOBS_QUERY,
   GET_CATEGORIES_BY_ID_QUERY,
-  GET_JOB_BY_ID_QUERY,
+  GET_JOB_BY_ID_QUERY
 } from '@/graphql/queries';
 
 import { addApolloState, initializeApollo } from '@/lib/apolloClient';
 import { useCategoriesById, useJobById } from '@/graphql/hooks';
-import AddJobModal from '@/components/AddJobModal';
+
+// Components
 import Header from '@/components/Header';
-import { CheckIcon } from '@chakra-ui/icons';
+
+// Dynamic Render
+const AddJobModalComponent = dynamic(() => import('@/components/AddJobModal'));
 
 export async function getStaticPaths() {
   const apolloClient = initializeApollo();
   const {
-    data: { jobs },
+    data: { jobs }
   } = await apolloClient.query({
     query: ALL_JOBS_QUERY,
+    variables: { limit: 50 }
   });
 
   const paths = jobs.map(({ id }) => ({
     params: {
-      jobId: id,
-    },
+      jobId: id
+    }
   }));
 
   return {
     paths,
-    fallback: true,
+    fallback: true
   };
 }
 
@@ -48,31 +55,32 @@ export async function getStaticProps({ params }) {
 
   const { data } = await apolloClient.query({
     query: GET_JOB_BY_ID_QUERY,
-    variables: { id: jobId },
+    variables: { id: jobId }
   });
 
   await apolloClient.query({
     query: GET_CATEGORIES_BY_ID_QUERY,
-    variables: { _in: data.jobs_by_pk.categoriesIds },
+    variables: { _in: data.jobs_by_pk.categoriesIds }
   });
 
   return addApolloState(apolloClient, {
-    props: {},
+    props: { jobId }
   });
 }
 
-const JobPage = () => {
+const JobPage = props => {
   const router = useRouter();
   const {
-    query: { jobId },
-  } = router;
-  const { loading: loadingJob, error: errorJob, data } = useJobById(jobId);
+    loading: loadingJob,
+    error: errorJob,
+    data: job
+  } = useJobById(props.jobId);
 
   const {
     loading: loadingCategories,
     error: errorCategories,
-    data: dataCategories,
-  } = useCategoriesById(data?.jobs_by_pk?.categoriesIds);
+    data: dataCategories
+  } = useCategoriesById(job?.categoriesIds);
 
   if (errorJob || errorCategories) {
     console.error(`Error: ${errorJob || errorCategories}`);
@@ -102,8 +110,8 @@ const JobPage = () => {
     imageUrl,
     postedDate,
     requestSent,
-    title,
-  } = data.jobs_by_pk;
+    title
+  } = job;
 
   const { categories } = dataCategories;
 
@@ -115,7 +123,7 @@ const JobPage = () => {
     'yellow',
     'teal',
     'cyan',
-    'pink',
+    'pink'
   ];
 
   const randomItem = () =>
@@ -133,10 +141,10 @@ const JobPage = () => {
           top="70px"
           zIndex="1"
         >
-          <AddJobModal
+          <AddJobModalComponent
             buttonText="Edit Job"
             title="Edit Job"
-            job={data.jobs_by_pk}
+            job={job}
           />
         </Box>
         <Grid

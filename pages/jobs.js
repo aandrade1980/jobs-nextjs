@@ -1,20 +1,31 @@
+import dynamic from 'next/dynamic';
 import { Box } from '@chakra-ui/react';
-import nookies from 'nookies';
-import React from 'react';
+import { getSession } from 'next-auth/react';
 
-import { admin } from '@/lib/firebaseAdmin';
+// Utils
 import { useSearch } from '@/util/search';
-import { JobsTableHeader } from '@/components/JobsTableHeader';
-import Header from '@/components/Header';
-import JobsTable from '@/components/JobsTable';
-import JobsTableSkeleton from '@/components/JobsTableSkeleton';
-import Page from '@/components/Page';
+
+// Hooks
+import { useAuth } from '@/hooks/hooks';
 import { useJobsByAuthor } from '@/graphql/hooks';
+
+// Components
+import Header from '@/components/Header';
+import Page from '@/components/Page';
+
+// Dynamic Render
+const JobsTableHeaderComponent = dynamic(() =>
+  import('@/components/JobsTableHeader')
+);
+const JobsTableComponent = dynamic(() => import('@/components/JobsTable'));
+const JobsTableSkeletonComponent = dynamic(() =>
+  import('@/components/JobsTableSkeleton')
+);
 
 const LoadingState = ({ children }) => (
   <Box minH="100vh" backgroundColor="gray.100">
     <Header active="jobs" />
-    <Box px={8} maxW="1250px" margin="0 auto">
+    <Box as="main" px={8} maxW="1250px" margin="0 auto">
       {children}
     </Box>
   </Box>
@@ -28,7 +39,7 @@ const Jobs = ({ userId }) => {
     error && console.error(`Error in Jobs page: ${error}`);
     return (
       <LoadingState>
-        <JobsTableSkeleton />
+        <JobsTableSkeletonComponent />
       </LoadingState>
     );
   }
@@ -43,38 +54,39 @@ const Jobs = ({ userId }) => {
 
   return (
     <LoadingState>
-      <JobsTableHeader />
-      <JobsTable jobs={filteredJobs} />
+      <JobsTableHeaderComponent />
+      <JobsTableComponent jobs={filteredJobs} />
     </LoadingState>
   );
 };
 
-const JobsPage = ({ userId }) => (
-  <Page name="Jobs" path="/jobs">
-    <Jobs userId={userId} />
-  </Page>
-);
+const JobsPage = () => {
+  const { user } = useAuth();
 
-export default JobsPage;
+  return (
+    <Page name="Jobs" path="/jobs">
+      {user?.id && <Jobs userId={user.id} />}
+    </Page>
+  );
+};
 
 export async function getServerSideProps(context) {
-  try {
-    const cookies = nookies.get(context);
-    const token = await admin.auth().verifyIdToken(cookies.token);
-    const { uid } = token;
+  const session = await getSession(context);
 
-    return {
-      props: { userId: uid }
-    };
-  } catch (error) {
-    console.error(error);
-    nookies.destroy(context, 'token');
-
+  if (!session) {
     return {
       redirect: {
         destination: '/',
-        statusCode: 302
+        permanent: false
       }
     };
   }
+
+  return {
+    props: {
+      session
+    }
+  };
 }
+
+export default JobsPage;
