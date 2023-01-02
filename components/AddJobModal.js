@@ -89,7 +89,11 @@ function AddJobModal({ buttonText, title, job }) {
   }) => {
     setCreatingJob(true);
 
-    const parsedCategoriesIds = parseCategoriesIds(categoriesIds);
+    const parsedCategoriesIds = categoriesIds
+      ? parseCategoriesIds(
+          Array.isArray(categoriesIds) ? categoriesIds : [categoriesIds]
+        )
+      : undefined;
 
     if (job) {
       try {

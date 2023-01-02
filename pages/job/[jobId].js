@@ -113,7 +113,7 @@ const JobPage = props => {
     title
   } = job;
 
-  const { categories } = dataCategories;
+  const { categories } = dataCategories || [];
 
   const colorScheme = [
     'green',
@@ -168,7 +168,7 @@ const JobPage = props => {
             {company}
           </Heading>
           <Flex gridArea="categories" flexWrap="wrap">
-            {categories.map(({ id, name }) => (
+            {categories?.map(({ id, name }) => (
               <Badge colorScheme={randomItem()} key={id} mr={2} mb={2}>
                 {name}
               </Badge>
