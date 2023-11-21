@@ -33,7 +33,7 @@
     "framer-motion": "^3.2.2-rc.1",
     "graphql": "^15.4.0",
     "next": "^13.5.0",
-    "next-auth": "^4.20.1",
+    "next-auth": "^4.24.5",
     "next-seo": "^4.18.0",
     "nextjs-progressbar": "^0.0.11",
     "react": "^18.2.0",
